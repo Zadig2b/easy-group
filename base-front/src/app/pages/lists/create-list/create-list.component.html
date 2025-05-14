@@ -1,0 +1,17 @@
+<form [formGroup]="listForm" (ngSubmit)="onSubmit()" class="mt-4">
+  <div class="mb-3">
+    <label for="name" class="form-label">Nom de la liste</label>
+    <input
+      type="text"
+      id="name"
+      class="form-control"
+      formControlName="name"
+      placeholder="ex: CDA Mai 2025"
+    />
+    <div class="text-danger mt-1" *ngIf="listForm.get('name')?.invalid && listForm.get('name')?.touched">
+      Le nom est requis
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary" [disabled]="listForm.invalid">Créer la liste</button>
+</form>

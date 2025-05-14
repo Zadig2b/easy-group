@@ -1,0 +1,28 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface ListDto {
+  id: number;
+  name: string;
+  personCount: number;
+  drawCount: number;
+}
+
+@Injectable({ providedIn: 'root' })
+export class ListService {
+  private apiUrl = 'http://localhost:8080/api/lists';
+
+  constructor(private http: HttpClient) {}
+
+  getUserLists(): Observable<ListDto[]> {
+    return this.http.get<ListDto[]>(this.apiUrl);
+  }
+
+  createList(name: string): Observable<any> {
+  return this.http.post(this.apiUrl, name, {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+
+}

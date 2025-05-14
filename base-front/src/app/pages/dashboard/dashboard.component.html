@@ -1,0 +1,31 @@
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📋 Mes listes</h2>
+    <a routerLink="/lists/create" class="btn btn-success">➕ Nouvelle liste</a>
+  </div>
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+
+  <div *ngIf="!loading && lists.length === 0" class="alert alert-info">
+    Aucune liste trouvée. Commencez par en créer une !
+  </div>
+
+  <div *ngIf="!loading && lists.length > 0">
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      <div class="col" *ngFor="let list of lists">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ list.name }}</h5>
+            <p class="card-text">
+              👥 {{ list.personCount }} personnes<br />
+              🎲 {{ list.drawCount }} tirages
+            </p>
+            <a [routerLink]="['/lists', list.id]" class="btn btn-outline-primary btn-sm">Voir la liste</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
