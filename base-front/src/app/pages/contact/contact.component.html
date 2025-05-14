@@ -1,0 +1,66 @@
+<div class="container py-5">
+    <h1 class="mb-4">Contact</h1>
+  
+    <form #contactForm="ngForm" (ngSubmit)="sendEmail()" novalidate>
+  
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="prenom" class="form-label">Prénom</label>
+          <input type="text" id="prenom" name="prenom" class="form-control" [(ngModel)]="formData.prenom" required #prenom="ngModel">
+          <div *ngIf="prenom.invalid && prenom.touched" class="text-danger">Champ requis</div>
+        </div>
+        <div class="col-md-6">
+          <label for="nom" class="form-label">Nom</label>
+          <input type="text" id="nom" name="nom" class="form-control" [(ngModel)]="formData.nom" required #nom="ngModel">
+          <div *ngIf="nom.invalid && nom.touched" class="text-danger">Champ requis</div>
+        </div>
+      </div>
+  
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="email" class="form-label">Adresse e-mail</label>
+          <input type="email" id="email" name="email" class="form-control" [(ngModel)]="formData.email" required #email="ngModel">
+          <div *ngIf="email.invalid && email.touched" class="text-danger">Email invalide</div>
+        </div>
+        <div class="col-md-6">
+          <label for="telephone" class="form-label">Téléphone</label>
+          <input type="tel" id="telephone" name="telephone" class="form-control" [(ngModel)]="formData.telephone">
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="secteur" class="form-label">Votre secteur géographique</label>
+        <select id="secteur" name="secteur" class="form-select" [(ngModel)]="formData.secteur" required #secteur="ngModel">
+          <option value="">Veuillez choisir une option</option>
+          <option value="Nord Isère">Nord Isère</option>
+          <option value="Sud Isère">Sud Isère</option>
+          <option value="Voironnais">Voironnais</option>
+          <option value="Viennois">Viennois</option>
+          <option value="Bièvre">Bièvre</option>
+          <option value="Autre">Autre</option>
+        </select>
+        <div *ngIf="secteur.invalid && secteur.touched" class="text-danger">Champ requis</div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="sujet" class="form-label">Sujet</label>
+        <input type="text" id="sujet" name="sujet" class="form-control" [(ngModel)]="formData.sujet" required #sujet="ngModel">
+        <div *ngIf="sujet.invalid && sujet.touched" class="text-danger">Champ requis</div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="message" class="form-label">Votre message</label>
+        <textarea id="message" name="message" rows="6" class="form-control" [(ngModel)]="formData.message" required #message="ngModel"></textarea>
+        <div *ngIf="message.invalid && message.touched" class="text-danger">Champ requis</div>
+      </div>
+  
+      <div class="text-end">
+        <button type="submit" class="btn btn-primary" [disabled]="contactForm.invalid">Envoyer</button>
+      </div>
+  
+      <div *ngIf="successMessage" class="alert alert-success mt-3">
+        {{ successMessage }}
+      </div>
+    </form>
+  </div>
+  

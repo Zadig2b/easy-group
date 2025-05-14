@@ -1,0 +1,10 @@
+<div class="card h-100">
+    <img [src]="apartment.image" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">{{ apartment.title }}</h5>
+      <p class="card-text">{{ apartment.city }} – {{ apartment.price | currency:'EUR' }}</p>
+      <p class="card-text"><strong>Rentabilité :</strong> {{ apartment.rentability }}%</p>
+      <a class="btn btn-primary w-100" [routerLink]="['/catalog', apartment.id]">Détails</a>
+    </div>
+  </div>
+  

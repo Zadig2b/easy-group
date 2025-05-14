@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">{{ appName }}</a>
+
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+        <!-- Liens visibles si connecté -->
+        <ng-container *ngIf="isLoggedIn$ | async; else loggedOut">
+          <li class="nav-item"><a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" (click)="logout()" style="cursor: pointer;">Déconnexion</a></li>
+        </ng-container>
+
+        <!-- Liens visibles si déconnecté -->
+        <ng-template #loggedOut>
+          <li class="nav-item"><a class="nav-link" routerLink="/parrainage" routerLinkActive="active">Le parrainage de proximité</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/un-parrain-pour-son-enfant" routerLinkActive="active">Un parrain pour son enfant</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/actualites" routerLinkActive="active">Actualités</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/association" routerLinkActive="active">L'association</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/contact" routerLinkActive="active">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/mentions-legales" routerLinkActive="active">Mentions légales</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/don-adhesion" routerLinkActive="active">Don/Adhésion</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/auth/login" routerLinkActive="active">Connexion</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/auth/register" routerLinkActive="active">Inscription</a></li>
+        </ng-template>
+
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,15 @@
+{
+    "type": "module",
+    "scripts": {
+        "init:project": "node init-project.js",
+        "start:all": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+        "start:frontend": "cd base-front && npm start",
+        "start:backend": "cd base-back && mvnw.cmd spring-boot:run"
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2",
+        "dotenv": "^16.5.0",
+        "figlet": "^1.8.1",
+        "mysql2": "^3.14.1"
+    }
+}
