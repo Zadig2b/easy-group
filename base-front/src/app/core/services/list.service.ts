@@ -19,6 +19,11 @@ export class ListService {
     return this.http.get<ListDto[]>(this.apiUrl);
   }
 
+  getListById(id: number): Observable<ListDto> {
+  return this.http.get<ListDto>(`${this.apiUrl}/${id}`);
+}
+
+
   createList(name: string): Observable<any> {
   return this.http.post(this.apiUrl, name, {
     headers: { 'Content-Type': 'application/json' }

@@ -1,17 +1,29 @@
 <div class="container mt-5">
 
-    <!-- Liste des personnes -->
-  <app-person-list
-    [listId]="listId"
-    [refreshToken]="refreshToken"
-  ></app-person-list>
-  <!-- Formulaire d'ajout -->
-  <app-person-form
-    [listId]="listId"
-    (personAdded)="refreshList()"
-  ></app-person-form>
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
 
-  <hr class="my-4" />
+  <div *ngIf="!loading && !error">
+    <h2 class="mb-4">
+      👥 Liste : <span class="text-primary">{{ listName }}</span>
+    </h2>
+    <p><strong>{{ personCount }}</strong> personne(s) dans cette liste</p>
 
+    <app-person-list
+      [listId]="listId"
+      [refreshToken]="refreshToken"
+    ></app-person-list>
 
+    <hr class="my-4" />
+
+    <app-person-form
+      [listId]="listId"
+      (personAdded)="refreshList()"
+    ></app-person-form>
+  </div>
+
+  <div *ngIf="error && !loading" class="alert alert-danger">
+    ❌ Impossible de charger la liste. Vérifiez vos droits ou réessayez plus tard.
+  </div>
 </div>
