@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { GLOBAL_CONFIG } from '../../config/global.config';
 
 @Component({
   selector: 'app-footer',
@@ -7,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent {
+    private config = inject(GLOBAL_CONFIG);
 
+authorName = this.config.author
 }
