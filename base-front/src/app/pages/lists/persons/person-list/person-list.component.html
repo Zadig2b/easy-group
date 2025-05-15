@@ -1,0 +1,36 @@
+<div class="container mt-4">
+  <h3>👥 Personnes de la liste</h3>
+
+  <div *ngIf="loading" class="text-center mt-4">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+
+  <div *ngIf="!loading && persons.length === 0" class="alert alert-info">
+    Aucun membre pour cette liste. Ajoutez-en un ci-dessous !
+  </div>
+
+  <table *ngIf="!loading && persons.length > 0" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Genre</th>
+        <th>Âge</th>
+        <th>Français</th>
+        <th>Tech</th>
+        <th>Ancien DWWM</th>
+        <th>Profil</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let person of persons">
+        <td>{{ person.name }}</td>
+        <td>{{ person.gender }}</td>
+        <td>{{ person.age }}</td>
+        <td>{{ person.frenchLevel }}</td>
+        <td>{{ person.techLevel }}</td>
+        <td>{{ person.oldDwwm ? '✅' : '❌' }}</td>
+        <td>{{ person.profile }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
