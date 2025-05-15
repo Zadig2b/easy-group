@@ -2,14 +2,10 @@ package com.base.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.base.dto.DrawDto;
 import com.base.entity.User;
@@ -32,18 +28,42 @@ public class DrawController {
 
     @PostMapping
     public void saveDraw(@PathVariable Long listId, @RequestBody DrawDto drawDto, @AuthenticationPrincipal User user) {
+        System.out.println("🔐 [POST] saveDraw – userId=" + user.getId() + ", listId=" + listId);
+
         UserList list = listRepo.findById(listId)
-            .filter(l -> l.getOwner().equals(user))
-            .orElseThrow();
+            .orElseThrow(() -> {
+                System.out.println("❌ Liste introuvable");
+                return new ResponseStatusException(HttpStatus.NOT_FOUND);
+            });
+
+        System.out.println("✅ Liste trouvée – ownerId=" + list.getOwner().getId());
+
+        if (!list.getOwner().equals(user)) {
+            System.out.println("⛔ Accès refusé – userId ne correspond pas au ownerId");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
         drawService.saveDraw(list, drawDto);
+        System.out.println("✅ Tirage enregistré");
     }
 
     @GetMapping
     public List<DrawDto> getHistory(@PathVariable Long listId, @AuthenticationPrincipal User user) {
+        System.out.println("🔐 [GET] getHistory – userId=" + user.getId() + ", listId=" + listId);
+
         UserList list = listRepo.findById(listId)
-            .filter(l -> l.getOwner().equals(user))
-            .orElseThrow();
+            .orElseThrow(() -> {
+                System.out.println("❌ Liste introuvable");
+                return new ResponseStatusException(HttpStatus.NOT_FOUND);
+            });
+
+        System.out.println("✅ Liste trouvée – ownerId=" + list.getOwner().getId());
+
+        if (!list.getOwner().equals(user)) {
+            System.out.println("⛔ Accès refusé – userId ne correspond pas au ownerId");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
         return drawService.getDrawHistory(list);
     }
 }
-
