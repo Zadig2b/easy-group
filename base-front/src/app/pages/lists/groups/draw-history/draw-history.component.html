@@ -1,0 +1,19 @@
+<div *ngIf="loading" class="text-center my-3">
+  <div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<div *ngIf="!loading && draws.length === 0" class="alert alert-info">
+  Aucun tirage enregistré pour cette liste.
+</div>
+
+<div *ngIf="!loading && draws.length > 0">
+  <h4>📜 Historique des tirages</h4>
+  <div *ngFor="let draw of draws" class="mb-4">
+    <h5>{{ draw.createdAt | date:'short' }}</h5>
+    <ul class="list-group">
+      <li *ngFor="let group of draw.groups" class="list-group-item">
+        <strong>{{ group.name }}</strong> — Membres : {{ group.memberIds.join(', ') }}
+      </li>
+    </ul>
+  </div>
+</div>

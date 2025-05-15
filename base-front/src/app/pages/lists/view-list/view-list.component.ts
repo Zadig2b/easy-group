@@ -4,11 +4,19 @@ import { CommonModule } from '@angular/common';
 import { PersonFormComponent } from '../persons/person-form/person-form.component';
 import { PersonListComponent } from '../persons/person-list/person-list.component';
 import { ListService } from '../../../core/services/list.service';
+import { SubmitDrawComponent } from '../groups/submit-draw/submit-draw.component';
+import { DrawHistoryComponent } from '../groups/draw-history/draw-history.component';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [CommonModule, PersonFormComponent, PersonListComponent],
+  imports: [
+    CommonModule,
+    PersonFormComponent,
+    PersonListComponent,
+    SubmitDrawComponent,
+    DrawHistoryComponent,
+  ],
   templateUrl: './view-list.component.html',
 })
 export class ListComponent implements OnInit {
@@ -21,6 +29,7 @@ export class ListComponent implements OnInit {
   refreshToken = 0;
   loading = true;
   error = false;
+  generatedGroupsFromFrontend: { name: string; memberIds: number[] }[] = [];
 
   ngOnInit(): void {
     this.loadListDetails();
@@ -41,7 +50,7 @@ export class ListComponent implements OnInit {
         this.personCount = 0;
         this.loading = false;
         this.error = true;
-      }
+      },
     });
   }
 
