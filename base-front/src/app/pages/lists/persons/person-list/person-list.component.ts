@@ -1,5 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
@@ -9,22 +8,39 @@ import { HttpClient } from '@angular/common/http';
   imports: [CommonModule],
   templateUrl: './person-list.component.html',
 })
-export class PersonListComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private http = inject(HttpClient);
+export class PersonListComponent implements OnChanges {
+  @Input() listId!: string;
+  @Input() refreshToken: number = 0;
 
   persons: any[] = [];
-  listId!: string;
   loading = true;
 
-  ngOnInit(): void {
-    this.listId = this.route.snapshot.paramMap.get('listId')!;
+  constructor(private http: HttpClient) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['listId'] || changes['refreshToken']) {
+      this.loadPersons();
+    }
+  }
+
+  loadPersons(): void {
+    if (!this.listId) return;
+
+    this.loading = true;
     this.http.get<any[]>(`http://localhost:8080/api/lists/${this.listId}/persons`).subscribe({
       next: (data) => {
         this.persons = data;
         this.loading = false;
       },
-      error: () => (this.loading = false),
+      error: () => {
+        this.loading = false;
+      }
+    });
+  }
+
+    deletePerson(id: number): void {
+    this.http.delete(`http://localhost:8080/api/lists/${this.listId}/persons/${id}`).subscribe({
+      next: () => this.loadPersons()
     });
   }
 }

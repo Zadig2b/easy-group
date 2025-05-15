@@ -1,6 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
@@ -13,9 +12,10 @@ import { HttpClient } from '@angular/common/http';
 export class PersonFormComponent {
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
-  private route = inject(ActivatedRoute);
 
-  listId = this.route.snapshot.paramMap.get('listId')!;
+  @Input() listId!: string;
+  @Output() personAdded = new EventEmitter<void>();
+
   message = '';
 
   personForm = this.fb.group({
@@ -29,10 +29,28 @@ export class PersonFormComponent {
   });
 
   submit(): void {
-    if (this.personForm.valid) {
+    if (this.personForm.valid && this.listId) {
       this.http.post(`http://localhost:8080/api/lists/${this.listId}/persons`, this.personForm.value).subscribe(() => {
         this.message = '✅ Personne ajoutée !';
-        this.personForm.reset();
+        this.personForm.reset({
+          name: '',
+          gender: 'MALE',
+          age: 20,
+          frenchLevel: 3,
+          techLevel: 2,
+          oldDwwm: false,
+          profile: 'A_LAISE'
+        });
+
+        // Marquer tous les champs comme touchés/validés pour réactiver le bouton
+        Object.keys(this.personForm.controls).forEach((key) => {
+          const control = this.personForm.get(key);
+          control?.markAsDirty();
+          control?.markAsTouched();
+        });
+        this.personForm.updateValueAndValidity();
+
+        this.personAdded.emit(); // notifie le parent
       });
     }
   }

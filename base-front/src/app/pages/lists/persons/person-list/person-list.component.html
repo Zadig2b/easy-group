@@ -30,6 +30,9 @@
         <td>{{ person.techLevel }}</td>
         <td>{{ person.oldDwwm ? '✅' : '❌' }}</td>
         <td>{{ person.profile }}</td>
+                <td>
+          <button class="btn btn-sm btn-danger" (click)="deletePerson(person.id)">🗑️</button>
+        </td>
       </tr>
     </tbody>
   </table>
