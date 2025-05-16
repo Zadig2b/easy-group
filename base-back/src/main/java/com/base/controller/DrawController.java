@@ -66,4 +66,14 @@ public class DrawController {
 
         return drawService.getDrawHistory(list);
     }
+
+    @DeleteMapping("/{drawId}")
+public void deleteDraw(
+    @PathVariable Long listId,
+    @PathVariable Long drawId,
+    @AuthenticationPrincipal User user
+) {
+    drawService.deleteDraw(drawId, user, listId);
+}
+
 }

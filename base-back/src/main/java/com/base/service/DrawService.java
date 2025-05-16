@@ -5,11 +5,15 @@ import com.base.dto.GroupDto;
 import com.base.entity.Draw;
 import com.base.entity.GroupEntity;
 import com.base.entity.Person;
+import com.base.entity.User;
 import com.base.entity.UserList;
 import com.base.repository.DrawRepository;
 import com.base.repository.GroupEntityRepository;
 import com.base.repository.PersonRepository;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -69,4 +73,20 @@ public class DrawService {
             return dto;
         }).toList();
     }
+
+    public void deleteDraw(Long drawId, User user, Long listId) {
+        Draw draw = drawRepository.findById(drawId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tirage non trouvé"));
+
+        if (!draw.getList().getId().equals(listId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le tirage ne correspond pas à cette liste");
+        }
+
+        if (!draw.getList().getOwner().equals(user)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vous n'avez pas le droit de supprimer ce tirage");
+        }
+
+        drawRepository.delete(draw); // cascade supprimera les GroupEntity liés
+    }
+
 }

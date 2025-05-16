@@ -37,15 +37,15 @@
       min="1"
       [max]="persons.length"
     />
-    <button class="btn btn-primary" (click)="generateRandomGroups()">
-      🎲 Générer les groupes
-    </button>
   </div>
 </div>
 
 <app-submit-draw
   [listId]="listId"
-  [groups]="generatedGroupsFromFrontend"
+  [persons]="persons"
+  [groupCount]="groupCount"
+  [refreshList]="refreshList.bind(this)"
 ></app-submit-draw>
+
 
 <app-draw-history [listId]="listId"></app-draw-history>

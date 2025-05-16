@@ -1,6 +1,6 @@
 <div class="my-4">
-  <button class="btn btn-success" (click)="submit()" [disabled]="loading || groups.length === 0">
-    Enregistrer ce tirage
+  <button class="btn btn-success" (click)="generateAndSubmitGroups()" [disabled]="loading || persons.length === 0">
+    🎲 Générer et enregistrer les groupes
   </button>
 
   <div *ngIf="message" class="alert alert-info mt-2">{{ message }}</div>

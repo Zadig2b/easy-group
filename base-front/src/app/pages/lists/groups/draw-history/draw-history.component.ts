@@ -34,13 +34,33 @@ export class DrawHistoryComponent implements OnInit {
         .get<DrawDto[]>(`http://localhost:8080/api/lists/${this.listId}/draws`)
         .subscribe({
           next: (data) => {
-            this.draws = data;
+            this.draws = data.sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            );
             this.loading = false;
           },
+
           error: () => {
             this.loading = false;
           },
         });
     }
   }
+
+  deleteDraw(drawId: number): void {
+  if (!confirm('❌ Supprimer ce tirage ?')) return;
+
+  this.http.delete(`http://localhost:8080/api/lists/${this.listId}/draws/${drawId}`)
+    .subscribe({
+      next: () => {
+        this.draws = this.draws.filter(d => d.id !== drawId);
+      },
+      error: () => {
+        alert('Erreur lors de la suppression');
+      }
+    });
+}
+
 }
