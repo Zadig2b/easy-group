@@ -9,7 +9,7 @@ export interface AuthUser {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(null);
@@ -17,26 +17,49 @@ export class AuthService {
 
   private readonly authUrl = 'http://localhost:8080/api/auth';
   private readonly userUrl = 'http://localhost:8080/api/user';
-
-  constructor(private http: HttpClient) {}
-
-  login(email: string, password: string): Observable<AuthUser> {
-    return this.http.post<{ token: string }>(`${this.authUrl}/login`, { email, password }).pipe(
-      tap(response => {
-        localStorage.setItem('jwt', response.token);
-      }),
-      switchMap(() => this.loadCurrentUser()) // 👈 on attend ici
-    );
+  private readonly isLoggedInSubject = new BehaviorSubject<boolean>(false);
+  public readonly isLoggedIn$ = this.isLoggedInSubject.asObservable();
+  constructor(private http: HttpClient) {
+    this.restoreLoginState();
+    this.loadUserFromToken(); 
   }
-  
+
+  private restoreLoginState(): void {
+    const token = this.getToken();
+    if (token) {
+      this.isLoggedInSubject.next(true);
+    }
+  }
+
+  loadUserFromToken(): void {
+    const token = this.getToken();
+    if (token) {
+      this.http.get<AuthUser>('http://localhost:8080/api/user/me').subscribe({
+        next: (user) => this.currentUserSubject.next(user),
+        error: () => this.logout(), // token invalide ? on force logout
+      });
+    }
+  }
+  login(email: string, password: string): Observable<AuthUser> {
+    return this.http
+      .post<{ token: string }>(`${this.authUrl}/login`, { email, password })
+      .pipe(
+        tap((response) => {
+          localStorage.setItem('jwt', response.token);
+        }),
+        switchMap(() => this.loadCurrentUser()) // 👈 on attend ici
+      );
+  }
 
   register(data: AuthUser & { password: string }): Observable<any> {
-    return this.http.post<{ token: string }>(`${this.authUrl}/register`, data).pipe(
-      tap(response => {
-        localStorage.setItem('jwt', response.token);
-        this.loadCurrentUser().subscribe(); // Charger l'utilisateur après register
-      })
-    );
+    return this.http
+      .post<{ token: string }>(`${this.authUrl}/register`, data)
+      .pipe(
+        tap((response) => {
+          localStorage.setItem('jwt', response.token);
+          this.loadCurrentUser().subscribe(); // Charger l'utilisateur après register
+        })
+      );
   }
 
   loadCurrentUser(): Observable<AuthUser> {
@@ -45,9 +68,9 @@ export class AuthService {
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<AuthUser>(`${this.userUrl}/me`, { headers }).pipe(
-      tap(user => this.currentUserSubject.next(user))
-    );
+    return this.http
+      .get<AuthUser>(`${this.userUrl}/me`, { headers })
+      .pipe(tap((user) => this.currentUserSubject.next(user)));
   }
 
   logout() {
@@ -61,5 +84,10 @@ export class AuthService {
 
   getUser(): AuthUser | null {
     return this.currentUserSubject.value;
+  }
+  getToken(): string | null {
+    // console.log(localStorage.getItem('jwt'));
+
+    return localStorage.getItem('jwt');
   }
 }
