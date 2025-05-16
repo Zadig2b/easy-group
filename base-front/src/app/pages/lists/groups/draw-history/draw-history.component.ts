@@ -63,4 +63,23 @@ export class DrawHistoryComponent implements OnInit {
     });
 }
 
+refresh(): void {
+  this.loading = true;
+  this.http.get<DrawDto[]>(`http://localhost:8080/api/lists/${this.listId}/draws`)
+    .subscribe({
+          next: (data) => {
+            this.draws = data.sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            );
+            this.loading = false;
+          },
+      error: () => {
+        this.loading = false;
+      }
+    });
+}
+
+
 }

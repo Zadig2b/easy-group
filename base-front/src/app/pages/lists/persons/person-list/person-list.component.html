@@ -1,5 +1,5 @@
-<div class="container mt-4">
-  <h3>👥 Personnes de la liste</h3>
+<div class=" mt-4">
+  <h3 class="mb-4">👥 <strong>Personnes de la liste</strong></h3>
 
   <div *ngIf="loading" class="text-center mt-4">
     <div class="spinner-border text-primary" role="status"></div>
@@ -9,31 +9,78 @@
     Aucun membre pour cette liste. Ajoutez-en un ci-dessous !
   </div>
 
-  <table *ngIf="!loading && persons.length > 0" class="table table-striped">
-    <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Genre</th>
-        <th>Âge</th>
-        <th>Français</th>
-        <th>Tech</th>
-        <th>Ancien DWWM</th>
-        <th>Profil</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let person of persons">
-        <td>{{ person.name }}</td>
-        <td>{{ person.gender }}</td>
-        <td>{{ person.age }}</td>
-        <td>{{ person.frenchLevel }}</td>
-        <td>{{ person.techLevel }}</td>
-        <td>{{ person.oldDwwm ? '✅' : '❌' }}</td>
-        <td>{{ person.profile }}</td>
-                <td>
-          <button class="btn btn-sm btn-danger" (click)="deletePerson(person.id)">🗑️</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div *ngIf="!loading && persons.length > 0" class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Nom</th>
+          <th>Genre</th>
+          <th>Âge</th>
+          <th>Niveau FR</th>
+          <th>Niveau Tech</th>
+          <th>Ancien DWWM</th>
+          <th>Profil</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let person of persons">
+          <td>{{ person.name }}</td>
+          <td>{{ person.genderLabel }}</td>
+          <td>{{ person.age }}</td>
+
+          <!-- Niveau Français -->
+          <td>
+            <span class="badge"
+                  [ngClass]="{
+                    'bg-danger': person.frenchLevel < 2,
+                    'bg-warning text-dark': person.frenchLevel >= 2 && person.frenchLevel < 4,
+                    'bg-success': person.frenchLevel >= 4
+                  }">
+              {{ person.frenchLevelLabel }}
+            </span>
+          </td>
+
+          <!-- Niveau Tech -->
+          <td>
+            <span class="badge"
+                  [ngClass]="{
+                    'bg-danger': person.techLevel < 2,
+                    'bg-warning text-dark': person.techLevel >= 2 && person.techLevel < 4,
+                    'bg-success': person.techLevel >= 4
+                  }">
+              {{ person.techLevelLabel }}
+            </span>
+          </td>
+
+          <!-- Ancien DWWM -->
+          <td>
+            <span class="badge"
+                  [ngClass]="{
+                    'bg-success': person.oldDwwm,
+                    'bg-danger': !person.oldDwwm
+                  }">
+              {{ person.oldDwwm ? 'Ancien ✅' : 'Nouveau ❌' }}
+            </span>
+          </td>
+
+          <!-- Profil -->
+          <td>
+            <span class="badge bg-info text-dark">{{ person.profileLabel }}</span>
+          </td>
+
+          <!-- Actions -->
+          <td>
+            <button
+              class="btn btn-sm btn-outline-danger"
+              (click)="deletePerson(person.id)"
+              title="Supprimer"
+            >
+              🗑️
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

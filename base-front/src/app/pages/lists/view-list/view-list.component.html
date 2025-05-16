@@ -1,4 +1,12 @@
-<div class="container mt-5">
+<div class="hero-header text-white text-center d-flex align-items-center justify-content-center mb-5"
+     style="background-image: url('images/2_md.jpg'); background-size: cover; background-position: center; height: 300px;">
+  <div class="bg-dark bg-opacity-50 p-3 rounded">
+    <h1 class="display-5">Bienvenue dans votre Promo</h1>
+    <p class="lead mb-0">Gérez vos groupes en toute simplicité</p>
+  </div>
+</div>
+
+<div class="mt-5">
 
   <div *ngIf="loading" class="text-center my-5">
     <div class="spinner-border text-primary" role="status"></div>
@@ -6,9 +14,9 @@
 
   <div *ngIf="!loading && !error">
     <h2 class="mb-4">
-      👥 Liste : <span class="text-primary">{{ listName }}</span>
+      🎓  Promo : <span class="text-primary">{{ listName }}</span>
     </h2>
-    <p><strong>{{ personCount }}</strong> personne(s) dans cette liste</p>
+    <p><strong>{{ personCount }}</strong> personne(s) dans cette Promo</p>
 
     <app-person-list
       [listId]="listId"
@@ -24,7 +32,7 @@
   </div>
 
   <div *ngIf="error && !loading" class="alert alert-danger">
-    ❌ Impossible de charger la liste. Vérifiez vos droits ou réessayez plus tard.
+    ❌ Impossible de charger la Promo. Vérifiez vos droits ou réessayez plus tard.
   </div>
 </div>
 <div class="my-4" *ngIf="persons.length > 0">
@@ -45,7 +53,9 @@
   [persons]="persons"
   [groupCount]="groupCount"
   [refreshList]="refreshList.bind(this)"
+    (drawSubmitted)="onDrawSubmitted()"
+
 ></app-submit-draw>
 
 
-<app-draw-history [listId]="listId"></app-draw-history>
+<app-draw-history #drawHistory [listId]="listId"></app-draw-history>

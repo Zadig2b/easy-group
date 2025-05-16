@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PersonFormComponent } from '../persons/person-form/person-form.component';
@@ -38,7 +38,8 @@ export class ListComponent implements OnInit {
   persons: Person[] = [];
   generatedGroupsFromFrontend: { name: string; memberIds: number[] }[] = [];
   groupCount = 2;
-
+  // 👉 Référence au composant enfant DrawHistoryComponent
+  @ViewChild(DrawHistoryComponent) drawHistoryComponent!: DrawHistoryComponent;
   ngOnInit(): void {
     this.loadListDetails();
     this.loadPersons();
@@ -78,5 +79,11 @@ export class ListComponent implements OnInit {
     this.loadPersons();
   }
 
-
+  // 👉 Appelé après la soumission d'un tirage
+  onDrawSubmitted(): void {
+    this.refreshList();
+    if (this.drawHistoryComponent) {
+      this.drawHistoryComponent.refresh();
+    }
+  }
 }

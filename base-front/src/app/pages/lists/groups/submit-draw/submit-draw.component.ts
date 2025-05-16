@@ -1,9 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Person } from '../../../../models/person.model';
 import { generateGroups } from '../../../../utils/group-generator';
-
 
 @Component({
   selector: 'app-submit-draw',
@@ -16,6 +15,7 @@ export class SubmitDrawComponent {
   @Input() persons: Person[] = [];
   @Input() groupCount = 2;
   @Input() refreshList: () => void = () => {};
+  @Output() drawSubmitted = new EventEmitter<void>(); // 👉 ici
 
   message = '';
   loading = false;
@@ -29,18 +29,22 @@ export class SubmitDrawComponent {
 
     this.loading = true;
 
-    this.http.post(`http://localhost:8080/api/lists/${this.listId}/draws`, {
-      groups: generatedGroups
-    }).subscribe({
-      next: () => {
-        this.message = '✅ Groupes enregistrés !';
-        this.refreshList();
-        this.loading = false;
-      },
-      error: () => {
-        this.message = '❌ Une erreur est survenue.';
-        this.loading = false;
-      }
-    });
+    this.http
+      .post(`http://localhost:8080/api/lists/${this.listId}/draws`, {
+        groups: generatedGroups,
+      })
+      .subscribe({
+        next: () => {
+          this.message = '✅ Groupes enregistrés !';
+          this.refreshList();
+          this.drawSubmitted.emit(); 
+          // 👉 notifie le parent
+          this.loading = false;
+        },
+        error: () => {
+          this.message = '❌ Une erreur est survenue.';
+          this.loading = false;
+        },
+      });
   }
 }
