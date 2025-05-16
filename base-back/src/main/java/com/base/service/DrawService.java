@@ -21,7 +21,8 @@ public class DrawService {
     private final DrawRepository drawRepository;
     private final PersonRepository personRepository;
 
-    public DrawService(DrawRepository drawRepository, GroupEntityRepository groupRepository, PersonRepository personRepository) {
+    public DrawService(DrawRepository drawRepository, GroupEntityRepository groupRepository,
+            PersonRepository personRepository) {
         this.drawRepository = drawRepository;
         this.personRepository = personRepository;
     }
@@ -57,6 +58,10 @@ public class DrawService {
                 GroupDto g = new GroupDto();
                 g.setName(group.getName());
                 g.setMemberIds(group.getMembers().stream().map(Person::getId).toList());
+                g.setMemberNames(group.getMembers().stream()
+                        .map(Person::getName)
+                        .toList());
+
                 return g;
             }).toList();
 

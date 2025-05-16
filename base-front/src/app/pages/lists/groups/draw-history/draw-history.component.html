@@ -7,13 +7,31 @@
 </div>
 
 <div *ngIf="!loading && draws.length > 0">
-  <h4>📜 Historique des tirages</h4>
-  <div *ngFor="let draw of draws" class="mb-4">
-    <h5>{{ draw.createdAt | date:'short' }}</h5>
-    <ul class="list-group">
-      <li *ngFor="let group of draw.groups" class="list-group-item">
-        <strong>{{ group.name }}</strong> — Membres : {{ group.memberIds.join(', ') }}
-      </li>
-    </ul>
+  <h4 class="mb-4">📜 Historique des tirages</h4>
+
+  <div *ngFor="let draw of draws" class="mb-5">
+    <h5 class="text-muted">{{ draw.createdAt | date:'short' }}</h5>
+
+    <div class="row row-cols-1 row-cols-md-2 g-3 mt-2">
+      <div class="col" *ngFor="let group of draw.groups">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title text-primary">{{ group.name }}</h5>
+
+            <div class="row row-cols-2 row-cols-sm-3 g-2 mt-2">
+              <div class="col" *ngFor="let name of group.memberNames">
+                <div class="card border-0 bg-light text-center p-2 h-100">
+                  <div class="card-body p-2">
+                    <span class="fw-semibold">{{ name }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

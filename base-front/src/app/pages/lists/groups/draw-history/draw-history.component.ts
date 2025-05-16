@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 interface GroupDto {
   name: string;
   memberIds: number[];
+  memberNames: string[];
 }
 
 interface DrawDto {
@@ -29,15 +30,17 @@ export class DrawHistoryComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.listId) {
-      this.http.get<DrawDto[]>(`http://localhost:8080/api/lists/${this.listId}/draws`).subscribe({
-        next: (data) => {
-          this.draws = data;
-          this.loading = false;
-        },
-        error: () => {
-          this.loading = false;
-        },
-      });
+      this.http
+        .get<DrawDto[]>(`http://localhost:8080/api/lists/${this.listId}/draws`)
+        .subscribe({
+          next: (data) => {
+            this.draws = data;
+            this.loading = false;
+          },
+          error: () => {
+            this.loading = false;
+          },
+        });
     }
   }
 }
