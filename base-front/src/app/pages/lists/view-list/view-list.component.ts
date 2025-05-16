@@ -3,15 +3,20 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PersonFormComponent } from '../persons/person-form/person-form.component';
 import { PersonListComponent } from '../persons/person-list/person-list.component';
-import { ListService } from '../../../core/services/list.service';
 import { SubmitDrawComponent } from '../groups/submit-draw/submit-draw.component';
 import { DrawHistoryComponent } from '../groups/draw-history/draw-history.component';
+import { ListService } from '../../../core/services/list.service';
+import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { Person } from '../../../models/person.model';
+import { generateGroups } from '../../../utils/group-generator';
 
 @Component({
   selector: 'app-list',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     PersonFormComponent,
     PersonListComponent,
     SubmitDrawComponent,
@@ -22,6 +27,7 @@ import { DrawHistoryComponent } from '../groups/draw-history/draw-history.compon
 export class ListComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private listService = inject(ListService);
+  private http = inject(HttpClient);
 
   listId = this.route.snapshot.paramMap.get('listId')!;
   listName = '';
@@ -29,10 +35,14 @@ export class ListComponent implements OnInit {
   refreshToken = 0;
   loading = true;
   error = false;
+
+  persons: Person[] = [];
   generatedGroupsFromFrontend: { name: string; memberIds: number[] }[] = [];
+  groupCount = 2;
 
   ngOnInit(): void {
     this.loadListDetails();
+    this.loadPersons();
   }
 
   loadListDetails(): void {
@@ -54,8 +64,25 @@ export class ListComponent implements OnInit {
     });
   }
 
+  loadPersons(): void {
+    this.http
+      .get<Person[]>(`http://localhost:8080/api/lists/${this.listId}/persons`)
+      .subscribe({
+        next: (data) => (this.persons = data),
+        error: () => console.error('Erreur chargement des personnes'),
+      });
+  }
+
   refreshList(): void {
     this.refreshToken++;
-    this.loadListDetails(); // recharge le nom + nombre de personnes
+    this.loadListDetails();
+    this.loadPersons();
+  }
+
+  generateRandomGroups(): void {
+    this.generatedGroupsFromFrontend = generateGroups(
+      this.persons,
+      this.groupCount
+    );
   }
 }

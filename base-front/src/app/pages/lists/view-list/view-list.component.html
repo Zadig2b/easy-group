@@ -27,6 +27,21 @@
     ❌ Impossible de charger la liste. Vérifiez vos droits ou réessayez plus tard.
   </div>
 </div>
+<div class="my-4" *ngIf="persons.length > 0">
+  <div class="input-group mb-3">
+    <span class="input-group-text">Taille des groupes</span>
+    <input
+      class="form-control"
+      type="number"
+      [(ngModel)]="groupCount"
+      min="1"
+      [max]="persons.length"
+    />
+    <button class="btn btn-primary" (click)="generateRandomGroups()">
+      🎲 Générer les groupes
+    </button>
+  </div>
+</div>
 
 <app-submit-draw
   [listId]="listId"
