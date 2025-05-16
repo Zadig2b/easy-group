@@ -9,7 +9,6 @@ import { ListService } from '../../../core/services/list.service';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Person } from '../../../models/person.model';
-import { generateGroups } from '../../../utils/group-generator';
 
 @Component({
   selector: 'app-list',
@@ -79,10 +78,5 @@ export class ListComponent implements OnInit {
     this.loadPersons();
   }
 
-  generateRandomGroups(): void {
-    this.generatedGroupsFromFrontend = generateGroups(
-      this.persons,
-      this.groupCount
-    );
-  }
+
 }

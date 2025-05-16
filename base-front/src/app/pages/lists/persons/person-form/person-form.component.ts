@@ -17,6 +17,7 @@ export class PersonFormComponent {
   @Output() personAdded = new EventEmitter<void>();
 
   message = '';
+  showForm = false;
 
   personForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
@@ -27,6 +28,10 @@ export class PersonFormComponent {
     techLevel: [2, [Validators.required, Validators.min(1), Validators.max(4)]],
     profile: ['A_LAISE', Validators.required],
   });
+
+  toggleForm(): void {
+    this.showForm = !this.showForm;
+  }
 
   submit(): void {
     if (this.personForm.valid && this.listId) {
@@ -42,7 +47,6 @@ export class PersonFormComponent {
           profile: 'A_LAISE'
         });
 
-        // Marquer tous les champs comme touchés/validés pour réactiver le bouton
         Object.keys(this.personForm.controls).forEach((key) => {
           const control = this.personForm.get(key);
           control?.markAsDirty();
@@ -50,7 +54,8 @@ export class PersonFormComponent {
         });
         this.personForm.updateValueAndValidity();
 
-        this.personAdded.emit(); // notifie le parent
+        this.showForm = false;
+        this.personAdded.emit();
       });
     }
   }

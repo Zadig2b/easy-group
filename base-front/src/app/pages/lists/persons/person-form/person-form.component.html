@@ -1,7 +1,7 @@
 <div class="container mt-5">
-  <h4>➕ Ajouter une personne</h4>
+<h4 style="cursor: pointer;" (click)="toggleForm()">➕ Ajouter une personne</h4>
 
-  <form   *ngIf="personForm && listId"
+<form *ngIf="showForm && personForm && listId"
 [formGroup]="personForm" (ngSubmit)="submit()" class="row g-3">
     <div class="col-md-6">
       <label class="form-label">Nom</label>
