@@ -1,11 +1,16 @@
 package com.base.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Person {
 
     @Id
@@ -39,6 +44,9 @@ public class Person {
     @JoinColumn(name = "list_id", nullable = false)
     private UserList list;
 
+    @ManyToMany(mappedBy = "members")
+    private List<GroupEntity> groups = new ArrayList<>();
+
     public enum Gender {
         MALE, FEMALE, UNDISCLOSED
     }
@@ -47,4 +55,3 @@ public class Person {
         TIMIDE, RESERVE, A_LAISE
     }
 }
-
