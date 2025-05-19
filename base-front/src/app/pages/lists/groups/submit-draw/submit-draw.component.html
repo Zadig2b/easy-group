@@ -1,7 +1,18 @@
-<div class="my-4">
-  <button class="btn-primary-custom" (click)="generateAndSubmitGroups()" [disabled]="loading || persons.length === 0">
+<div class="submit-draw-panel mt-5" *ngIf="persons.length > 0">
+  <div class="input-group">
+    <span class="input-group-text">Taille des groupes</span>
+    <input
+      class="form-control"
+      type="number"
+      [(ngModel)]="groupCount"
+      min="1"
+      [max]="persons.length"
+    />
+  </div>
+
+  <button class="btn-primary-custom mt-3" (click)="generateAndSubmitGroups()" [disabled]="loading || persons.length === 0">
     🎲 Générer et enregistrer les groupes
   </button>
 
-  <div *ngIf="message" class="alert alert-info mt-2">{{ message }}</div>
+  <div *ngIf="message" class="alert alert-info mt-3">{{ message }}</div>
 </div>

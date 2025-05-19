@@ -3,17 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Person } from '../../../../core/models/person.model';
 import { generateGroups } from '../../../../utils/group-generator';
+import { FormsModule } from '@angular/forms'; 
 
 @Component({
   selector: 'app-submit-draw',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './submit-draw.component.html',
+  styleUrl: './submit-draw.component.scss',
 })
 export class SubmitDrawComponent {
   @Input() listId!: string;
   @Input() persons: Person[] = [];
-  @Input() groupCount = 2;
+  @Input() groupCount: number = 2;
   @Input() refreshList: () => void = () => {};
   @Output() drawSubmitted = new EventEmitter<void>(); // 👉 ici
 
