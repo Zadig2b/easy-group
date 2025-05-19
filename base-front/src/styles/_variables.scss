@@ -1,0 +1,7 @@
+@use 'sass:color';
+
+$custom-bg: #172439;
+$custom-bg-light: color.adjust($custom-bg, $lightness: 10%);
+$custom-bg-lighter: color.adjust($custom-bg, $lightness: 25%);
+$custom-bg-very-light: color.adjust($custom-bg, $lightness: 70%);
+$custom-bg-dark:  color.adjust($custom-bg, $lightness: -10%);

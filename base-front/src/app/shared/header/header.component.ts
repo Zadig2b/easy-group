@@ -4,11 +4,24 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/auth.service';
 import { Observable, map } from 'rxjs';
 import { GLOBAL_CONFIG } from '../../config/global.config';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatButtonModule,
+    MatListModule,
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })

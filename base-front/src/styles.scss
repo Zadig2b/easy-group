@@ -1,1 +1,45 @@
 /* You can add global styles to this file, and also import other style files */
+@use "variables" as *;
+
+.custom-bg {
+  background-color: $custom-bg;
+  color: white !important;
+}
+
+.custom-bg-light {
+  background-color: $custom-bg-light;
+  color: white !important;
+}
+
+.custom-bg-lighter {
+  background-color: $custom-bg-lighter;
+  color: white !important;
+
+  a,
+  .navbar-brand,
+  .nav-link {
+    color: white !important;
+
+    &:hover,
+    &:focus {
+      color: lighten(white, 10%) !important;
+    }
+  }
+}
+
+
+.custom-bg-very-light {
+  background-color: $custom-bg-very-light;
+}
+
+.custom-bg-dark {
+  background-color: $custom-bg-dark;
+  color: white !important;
+}
+
+// body{
+//     background-color: $custom-bg-very-light;
+// }
+
+// html, body { height: 100%; }
+// body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

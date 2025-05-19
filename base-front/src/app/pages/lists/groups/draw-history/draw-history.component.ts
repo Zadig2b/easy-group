@@ -19,6 +19,7 @@ interface DrawDto {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './draw-history.component.html',
+  styleUrls: ['./draw-history.component.scss'],
 })
 export class DrawHistoryComponent implements OnInit {
   @Input() listId!: string;

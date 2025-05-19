@@ -9,9 +9,9 @@
 <div *ngIf="!loading && draws.length > 0">
   <h4 class="mb-4">📜 Historique des tirages</h4>
 
-  <div *ngFor="let draw of draws" class="mb-5">
+  <div *ngFor="let draw of draws" class="mb-5 custom-bg-light p-4 rounded">
 <div class="d-flex justify-content-between align-items-center">
-  <h5 class="text-muted mb-0">{{ draw.createdAt | date:'short' }}</h5>
+  <h5 class=" mb-0">{{ draw.createdAt | date:'short' }}</h5>
   <button class="btn btn-sm btn-outline-danger" (click)="deleteDraw(draw.id)">
     🗑️ Supprimer
   </button>
