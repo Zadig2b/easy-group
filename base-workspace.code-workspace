@@ -10,7 +10,10 @@
       "path": "base-back"
     },
     {
-      "path": "../../Dev/horizon"
+      "path": "../Java-Angular-Auth-Base"
+    },
+    {
+      "path": "../../Projets Dev Perso/lorcaddict"
     }
   ],
   "settings": {
