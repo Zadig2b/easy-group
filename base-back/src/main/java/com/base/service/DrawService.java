@@ -10,6 +10,7 @@ import com.base.entity.UserList;
 import com.base.repository.DrawRepository;
 import com.base.repository.GroupEntityRepository;
 import com.base.repository.PersonRepository;
+import com.base.repository.UserListRepository;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,15 @@ public class DrawService {
 
     private final DrawRepository drawRepository;
     private final PersonRepository personRepository;
+    private final UserListRepository userListRepository;
 
-    public DrawService(DrawRepository drawRepository, GroupEntityRepository groupRepository,
-            PersonRepository personRepository) {
+    public DrawService(DrawRepository drawRepository,
+            GroupEntityRepository groupRepository,
+            PersonRepository personRepository,
+            UserListRepository userListRepository) {
         this.drawRepository = drawRepository;
         this.personRepository = personRepository;
+        this.userListRepository = userListRepository;
     }
 
     public void saveDraw(UserList list, DrawDto dto) {
@@ -49,7 +54,11 @@ public class DrawService {
         }
 
         draw.setGroups(savedGroups);
-        drawRepository.save(draw); // cascade = ALL → enregistre aussi les groupes
+        drawRepository.save(draw); // Cascade = ALL → enregistre aussi les groupes
+
+        // ✅ Incrémenter drawCount sur la liste
+        list.setDrawCount(list.getDrawCount() + 1);
+        userListRepository.save(list);
     }
 
     public List<DrawDto> getDrawHistory(UserList list) {
@@ -78,15 +87,22 @@ public class DrawService {
         Draw draw = drawRepository.findById(drawId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tirage non trouvé"));
 
-        if (!draw.getList().getId().equals(listId)) {
+        UserList list = draw.getList();
+
+        if (!list.getId().equals(listId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le tirage ne correspond pas à cette liste");
         }
 
-        if (!draw.getList().getOwner().equals(user)) {
+        if (!list.getOwner().equals(user)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vous n'avez pas le droit de supprimer ce tirage");
         }
 
         drawRepository.delete(draw); // cascade supprimera les GroupEntity liés
+
+        // ✅ Décrémenter drawCount (sans passer sous 0)
+        int currentCount = list.getDrawCount();
+        list.setDrawCount(Math.max(0, currentCount - 1));
+        userListRepository.save(list);
     }
 
 }

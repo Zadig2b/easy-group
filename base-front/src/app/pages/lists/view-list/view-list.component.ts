@@ -8,7 +8,7 @@ import { DrawHistoryComponent } from '../groups/draw-history/draw-history.compon
 import { ListService } from '../../../core/services/list.service';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { Person } from '../../../models/person.model';
+import { Person } from '../../../core/models/person.model';
 
 @Component({
   selector: 'app-list',
@@ -43,6 +43,10 @@ export class ListComponent implements OnInit {
   ngOnInit(): void {
     this.loadListDetails();
     this.loadPersons();
+  }
+
+  onPersonDeleted(newCount: number): void {
+    this.personCount = newCount;
   }
 
   loadListDetails(): void {

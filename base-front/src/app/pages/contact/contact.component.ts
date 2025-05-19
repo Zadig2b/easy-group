@@ -13,46 +13,49 @@ import { environment } from '../../../environments/environment';
 })
 export class ContactComponent {
   successMessage = '';
-problemOptions = [
-  'Problème de connexion',
-  'Problème d\'affichage',
-  'Lien cassé ou erreur 404',
-  'Fonctionnalité ne fonctionne pas',
-  'Données manquantes ou incorrectes',
-  'Autre bug technique'
-];
+  problemOptions = [
+    'Problème de connexion',
+    "Problème d'affichage",
+    'Lien cassé ou erreur 404',
+    'Fonctionnalité ne fonctionne pas',
+    'Données manquantes ou incorrectes',
+    'Autre bug technique',
+  ];
 
-formData = {
-  prenom: '',
-  nom: '',
-  email: '',
-  telephone: '',
-  probleme: '',
-  sujet: '',
-  message: ''
-};
-
+  formData = {
+    prenom: '',
+    nom: '',
+    email: '',
+    telephone: '',
+    probleme: '',
+    sujet: '',
+    message: '',
+  };
 
   sendEmail() {
-    emailjs.send(
-      environment.emailjsServiceId,
-      environment.emailjsTemplateId,
-      this.formData,
-      environment.emailjsPublicKey
-    ).then(() => {
-      this.successMessage = 'Votre message a bien été envoyé ! Merci 🙌';
-this.formData = {
-  prenom: '',
-  nom: '',
-  email: '',
-  telephone: '',
-  probleme: '',
-  sujet: '',
-  message: ''
-};
-
-    }, (err) => {
-      alert('Erreur lors de l’envoi : ' + JSON.stringify(err));
-    });
+    emailjs
+      .send(
+        environment.emailjsServiceId,
+        environment.emailjsTemplateId,
+        this.formData,
+        environment.emailjsPublicKey
+      )
+      .then(
+        () => {
+          this.successMessage = 'Votre message a bien été envoyé ! Merci 🙌';
+          this.formData = {
+            prenom: '',
+            nom: '',
+            email: '',
+            telephone: '',
+            probleme: '',
+            sujet: '',
+            message: '',
+          };
+        },
+        (err) => {
+          alert('Erreur lors de l’envoi : ' + JSON.stringify(err));
+        }
+      );
   }
 }

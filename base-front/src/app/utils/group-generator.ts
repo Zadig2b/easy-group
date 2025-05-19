@@ -1,4 +1,4 @@
-import { Person } from '../models/person.model'; // à créer ou adapter
+import { Person } from '../core/models/person.model'; // à créer ou adapter
 
 export interface Group {
   name: string;

@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ListDto } from '../../core/models/list.model';
 
-export interface ListDto {
-  id: number;
-  name: string;
-  personCount: number;
-  drawCount: number;
-}
+
 
 @Injectable({ providedIn: 'root' })
 export class ListService {

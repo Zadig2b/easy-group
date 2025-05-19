@@ -18,10 +18,12 @@
     </h2>
     <p><strong>{{ personCount }}</strong> personne(s) dans cette Promo</p>
 
-    <app-person-list
-      [listId]="listId"
-      [refreshToken]="refreshToken"
-    ></app-person-list>
+<app-person-list
+  [listId]="listId"
+  [refreshToken]="refreshToken"
+  (personDeleted)="onPersonDeleted($event)">
+</app-person-list>
+
 
     <hr class="my-4" />
 

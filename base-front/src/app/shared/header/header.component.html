@@ -26,14 +26,14 @@
             <a class="nav-link nav-hover" (click)="logout()" style="cursor: pointer;">Déconnexion</a>
           </li>
         </ng-container>
-
-        <ng-template #loggedOut>
           <li class="nav-item">
             <a class="nav-link nav-hover" routerLink="/contact" routerLinkActive="active">Contact</a>
           </li>
           <li class="nav-item">
             <a class="nav-link nav-hover" routerLink="/mentions-legales" routerLinkActive="active">Mentions légales</a>
           </li>
+        <ng-template #loggedOut>
+
           <li class="nav-item">
             <a class="nav-link nav-hover" routerLink="/auth/login" routerLinkActive="active">Connexion</a>
           </li>

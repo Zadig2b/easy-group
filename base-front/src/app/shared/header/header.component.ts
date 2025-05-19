@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../core/auth.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { Observable, map } from 'rxjs';
 import { GLOBAL_CONFIG } from '../../config/global.config';
 import { MatToolbarModule } from '@angular/material/toolbar';

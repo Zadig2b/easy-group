@@ -7,6 +7,7 @@ import { MentionsLegalesComponent } from './pages/mentions-legales/mentions-lega
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CreateListComponent } from './pages/lists/create-list/create-list.component';
 import { ListComponent } from './pages/lists/view-list/view-list.component';
+import { ConditionsUtilisationComponent } from './pages/cgu/conditions-utilisation.component';
 
 export const routes: Routes = [
   {
@@ -28,6 +29,7 @@ export const routes: Routes = [
   { path: 'mentions-legales', component: MentionsLegalesComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'lists/create', component: CreateListComponent },
+  { path: 'cgu', component: ConditionsUtilisationComponent },
 
     // 🔽 Routes pour les personnes
   {

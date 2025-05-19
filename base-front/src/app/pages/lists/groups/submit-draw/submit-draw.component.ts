@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Person } from '../../../../models/person.model';
+import { Person } from '../../../../core/models/person.model';
 import { generateGroups } from '../../../../utils/group-generator';
 
 @Component({
