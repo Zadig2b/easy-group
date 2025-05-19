@@ -1,50 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
-@use "variables" as *;
+@use "sass:color";
+@use "theme" as *;
+@use "btn";
+@use "card";
 
-.custom-bg {
-  background-color: $custom-bg;
-  color: white !important;
-}
-
-.custom-bg-light {
-  background-color: $custom-bg-light;
-  color: white !important;
-}
-
-.custom-bg-lighter {
-  background-color: $custom-bg-lighter;
-  color: white !important;
-
-  a,
-  .navbar-brand,
-  .nav-link {
-    color: white !important;
-
-    &:hover,
-    &:focus {
-      color: lighten(white, 10%) !important;
-    }
-  }
-}
-
-
-.custom-bg-very-light {
-  background-color: $custom-bg-very-light;
-}
-
-.custom-bg-dark {
-  background-color: $custom-bg-dark;
-  color: white !important;
-}
-
-// body{
-//     background-color: $custom-bg-very-light;
-// }
-
-// html, body { height: 100%; }
-// body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -58,4 +19,64 @@ html, body {
 
 main.flex-fill {
   flex: 1 0 auto;
+}
+
+/* ---- Thème principal (basé sur $theme-color) ---- */
+
+.primary {
+  background-color: $theme-color;
+  color: white !important;
+}
+
+.primary-light {
+  background-color: $theme-light;
+  color: white !important;
+}
+
+.primary-lighter {
+  background-color: $theme-lighter;
+  color: white !important;
+
+  a,
+  .navbar-brand,
+  .nav-link {
+    color: white !important;
+
+    &:hover,
+    &:focus {
+      color: color.adjust(white, $lightness: 10%) !important;
+    }
+  }
+}
+
+.primary-very-light {
+  background-color: $theme-very-light;
+}
+
+.primary-dark {
+  background-color: $theme-dark;
+  color: white !important;
+}
+
+/* ---- Effets de style personnalisés ---- */
+
+.shadow-soft {
+  box-shadow: 0 4px 12px rgba($theme-color, 0.15);
+}
+
+.shadow-deep {
+  box-shadow: 0 6px 20px rgba($theme-color, 0.3);
+}
+
+.bg-ghost {
+  background-color: $theme-ghost;
+  color: $theme-color;
+}
+
+.border-primary-soft {
+  border: 1px solid $theme-border;
+}
+
+.text-primary-soft {
+  color: color.adjust($theme-color, $lightness: 20%);
 }

@@ -1,9 +1,13 @@
-<footer class="footer border-top py-3 custom-bg-lighter">
+<footer class="footer border-top py-3 primary">
   <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
     
-    <div class="text-muted small mb-2 mb-md-0">
-      &copy; 2025 {{ authorName }}
-    </div>
+<a class="small mb-2 mb-md-0 text-white text-decoration-none"
+   [href]="authorLink"
+   target="_blank"
+   rel="noopener noreferrer">
+  &copy; 2025 {{ authorName }}
+</a>
+
 
     <div class="footer-links d-flex gap-3">
       <a routerLink="/mentions-legales" class="text-white text-decoration-none link-hover">Mentions légales</a>

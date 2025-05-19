@@ -13,4 +13,5 @@ import { GLOBAL_CONFIG } from '../../config/global.config';
 export class FooterComponent {
   private config = inject(GLOBAL_CONFIG);
   authorName = this.config.author;
+  authorLink = this.config.authorlink;
 }

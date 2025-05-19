@@ -6,7 +6,7 @@
   Aucun tirage enregistré pour cette liste.
 </div>
 
-<div *ngIf="!loading && draws.length > 0">
+<div *ngIf="!loading && draws.length > 0" class="draw-list">
   <h4 class="mb-4">📜 Historique des tirages</h4>
 
   <div *ngFor="let draw of draws" class="mb-5 custom-bg-light p-4 rounded">
