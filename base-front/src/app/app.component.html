@@ -1,7 +1,12 @@
-<app-header></app-header>
+<div class="app-wrapper d-flex flex-column min-vh-100">
 
-<main class="container py-4">
-  <router-outlet></router-outlet>
-</main>
+  <app-header></app-header>
 
-<app-footer></app-footer>
+  <!-- Le main prendra tout l'espace restant -->
+  <main class="container py-4 flex-fill">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-footer></app-footer>
+
+</div>

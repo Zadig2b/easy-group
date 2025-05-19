@@ -13,16 +13,25 @@ import { environment } from '../../../environments/environment';
 })
 export class ContactComponent {
   successMessage = '';
+problemOptions = [
+  'Problème de connexion',
+  'Problème d\'affichage',
+  'Lien cassé ou erreur 404',
+  'Fonctionnalité ne fonctionne pas',
+  'Données manquantes ou incorrectes',
+  'Autre bug technique'
+];
 
-  formData = {
-    prenom: '',
-    nom: '',
-    email: '',
-    telephone: '',
-    secteur: '',
-    sujet: '',
-    message: ''
-  };
+formData = {
+  prenom: '',
+  nom: '',
+  email: '',
+  telephone: '',
+  probleme: '',
+  sujet: '',
+  message: ''
+};
+
 
   sendEmail() {
     emailjs.send(
@@ -32,15 +41,16 @@ export class ContactComponent {
       environment.emailjsPublicKey
     ).then(() => {
       this.successMessage = 'Votre message a bien été envoyé ! Merci 🙌';
-      this.formData = {
-        prenom: '',
-        nom: '',
-        email: '',
-        telephone: '',
-        secteur: '',
-        sujet: '',
-        message: ''
-      };
+this.formData = {
+  prenom: '',
+  nom: '',
+  email: '',
+  telephone: '',
+  probleme: '',
+  sujet: '',
+  message: ''
+};
+
     }, (err) => {
       alert('Erreur lors de l’envoi : ' + JSON.stringify(err));
     });

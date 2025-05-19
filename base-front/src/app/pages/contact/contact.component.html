@@ -28,19 +28,15 @@
         </div>
       </div>
   
-      <div class="mb-3">
-        <label for="secteur" class="form-label">Votre secteur géographique</label>
-        <select id="secteur" name="secteur" class="form-select" [(ngModel)]="formData.secteur" required #secteur="ngModel">
-          <option value="">Veuillez choisir une option</option>
-          <option value="Nord Isère">Nord Isère</option>
-          <option value="Sud Isère">Sud Isère</option>
-          <option value="Voironnais">Voironnais</option>
-          <option value="Viennois">Viennois</option>
-          <option value="Bièvre">Bièvre</option>
-          <option value="Autre">Autre</option>
-        </select>
-        <div *ngIf="secteur.invalid && secteur.touched" class="text-danger">Champ requis</div>
-      </div>
+<div class="mb-3">
+  <label for="probleme" class="form-label">Quel problème avez-vous rencontré ?</label>
+  <select id="probleme" name="probleme" class="form-select" [(ngModel)]="formData.probleme" required #probleme="ngModel">
+    <option value="">Veuillez choisir un problème</option>
+    <option *ngFor="let option of problemOptions" [value]="option">{{ option }}</option>
+  </select>
+  <div *ngIf="probleme.invalid && probleme.touched" class="text-danger">Champ requis</div>
+</div>
+
   
       <div class="mb-3">
         <label for="sujet" class="form-label">Sujet</label>

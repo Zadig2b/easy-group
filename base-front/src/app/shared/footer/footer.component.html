@@ -1,4 +1,14 @@
-<footer class="text-center py-4 border-top mt-5  custom-bg-lighter">
-    <p class="mb-0">&copy; 2025 {{authorName}}</p>
-  </footer>
-  
+<footer class="footer border-top py-3 custom-bg-lighter">
+  <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+    
+    <div class="text-muted small mb-2 mb-md-0">
+      &copy; 2025 {{ authorName }}
+    </div>
+
+    <div class="footer-links d-flex gap-3">
+      <a routerLink="/mentions-legales" class="text-white text-decoration-none link-hover">Mentions légales</a>
+      <a routerLink="/conditions-utilisation" class="text-white text-decoration-none link-hover">Conditions d'utilisation</a>
+    </div>
+
+  </div>
+</footer>

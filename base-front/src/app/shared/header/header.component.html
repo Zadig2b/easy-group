@@ -1,24 +1,46 @@
-<nav class="navbar navbar-expand-lg  custom-bg-lighter">
+<nav class="navbar navbar-expand-lg navbar-dark custom-bg-lighter">
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/">{{ appName }}</a>
 
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+    <!-- 🔽 Bouton burger pour mobile -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#mainNavbar"
+      aria-controls="mainNavbar"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <!-- Liens visibles si connecté -->
+    <!-- 🔽 Contenu collapsable -->
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <ng-container *ngIf="isLoggedIn$ | async; else loggedOut">
-          <li class="nav-item"><a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" (click)="logout()" style="cursor: pointer;">Déconnexion</a></li>
+          <li class="nav-item">
+            <a class="nav-link nav-hover" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-hover" (click)="logout()" style="cursor: pointer;">Déconnexion</a>
+          </li>
         </ng-container>
 
-        <!-- Liens visibles si déconnecté -->
         <ng-template #loggedOut>
-          <li class="nav-item"><a class="nav-link" routerLink="/contact" routerLinkActive="active">Contact</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/mentions-legales" routerLinkActive="active">Mentions légales</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/auth/login" routerLinkActive="active">Connexion</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/auth/register" routerLinkActive="active">Inscription</a></li>
+          <li class="nav-item">
+            <a class="nav-link nav-hover" routerLink="/contact" routerLinkActive="active">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-hover" routerLink="/mentions-legales" routerLinkActive="active">Mentions légales</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-hover" routerLink="/auth/login" routerLinkActive="active">Connexion</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-hover" routerLink="/auth/register" routerLinkActive="active">Inscription</a>
+          </li>
         </ng-template>
-
       </ul>
     </div>
   </div>
