@@ -1,17 +1,17 @@
-@use "variables" as *;
+@use "theme" as *;
 
 .card-custom {
-  background-color: $primary-lighter;
-  border: 1px solid $primary-border;
+  background-color: $theme-lighter;
+  border: 1px solid $theme-border;
   border-radius: 0.5rem;
   padding: 1rem;
-  box-shadow: 0 2px 6px rgba($primary, 0.15);
+  box-shadow: 0 2px 6px rgba($theme-color, 0.15);
   color: white;
 }
 
 .card-translucent {
-  background-color: $primary-translucent;
-  border: 1px solid rgba($primary-border, 0.3);
+  background-color: $theme-translucent;
+  border: 1px solid rgba($theme-border, 0.3);
   backdrop-filter: blur(6px);
   border-radius: 0.5rem;
   padding: 1rem;

@@ -1,5 +1,5 @@
-<div class=" mt-5">
-<h4 style="cursor: pointer;" (click)="toggleForm()">➕ Ajouter une personne</h4>
+<div class=" mt-5 p-3 primary-very-light rounded">
+<div class="btn-primary-custom" (click)="toggleForm()">➕ Ajouter une personne</div>
 
 <form *ngIf="showForm && personForm && listId"
 [formGroup]="personForm" (ngSubmit)="submit()" class="row g-3">

@@ -1,15 +1,9 @@
-@use 'sass:color';
-
-
-
-// Colors
-$primary: #172439;
-$secondary: #5a8a3a;
-$tertiary:#253917;
-$quatre:#52773a;
+@use "sass:color";
+@use "colors" as *;
 
 // 🎨 Base du thème (modifie cette variable pour changer tout le thème)
-$theme-color: $quatre; // ex : $primary ou $secondary
+$theme-color: $primary; // ex : $primary ou $secondary
+$btn-color: $primary;
 
 // 🔹 Dérivés standards
 $theme-light: color.adjust($theme-color, $lightness: 10%);
@@ -23,7 +17,15 @@ $theme-translucent: color.change($theme-color, $alpha: 0.8);
 $theme-transparent: color.change($theme-color, $alpha: 0.4);
 $theme-ghost: color.change($theme-color, $alpha: 0.1);
 
+$btn-translucent: color.change($btn-color, $alpha: 0.8);
+$btn-transparent: color.change($btn-color, $alpha: 0.4);
+$btn-ghost: color.change($btn-color, $alpha: 0.1);
+
 // 🔸 Comportements UI
 $theme-hover: color.adjust($theme-color, $lightness: 15%, $saturation: 15%);
 $theme-active: color.adjust($theme-color, $lightness: -5%, $saturation: 15%);
 $theme-border: color.scale($theme-color, $lightness: 40%);
+
+$btn-hover: color.adjust($btn-color, $lightness: 10%, $saturation: 10%);
+$btn-active: color.adjust($btn-color, $lightness: -5%, $saturation: 15%);
+$btn-border: color.scale($btn-color, $lightness: 40%);
