@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SubmitDrawComponent } from './submit-draw.component';
 
 describe('SubmitDrawComponent', () => {
@@ -8,9 +8,9 @@ describe('SubmitDrawComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SubmitDrawComponent]
-    })
-    .compileComponents();
+      imports: [SubmitDrawComponent],
+      providers: [provideHttpClientTesting()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SubmitDrawComponent);
     component = fixture.componentInstance;

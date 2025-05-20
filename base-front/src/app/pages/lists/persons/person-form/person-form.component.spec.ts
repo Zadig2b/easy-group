@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { PersonFormComponent } from './person-form.component';
 
 describe('PersonFormComponent', () => {
@@ -8,9 +8,9 @@ describe('PersonFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PersonFormComponent]
-    })
-    .compileComponents();
+      imports: [PersonFormComponent], // 👈 standalone
+      providers: [provideHttpClientTesting()] // ✅ fournit HttpClient
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PersonFormComponent);
     component = fixture.componentInstance;
