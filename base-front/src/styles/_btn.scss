@@ -53,6 +53,18 @@
   }
 }
 
+.btn-bg-white {
+  @extend .btn-primary-custom;
+  background-color: white;
+  color: $btn-color;
+  border: 1px solid $btn-color;
+
+  &:hover {
+    background-color: $btn-color;
+    color: white;
+  }
+}
+
 /* Bouton ghost */
 .btn-ghost-primary {
   @extend .btn-primary-custom;
