@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "horizon-parrainage": {
+    "easy-group": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/horizon-parrainage",
+            "outputPath": "dist/easy-group",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "stylePreprocessorOptions": {
@@ -71,10 +71,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "horizon-parrainage:build:production"
+              "buildTarget": "easy-group:build:production"
             },
             "development": {
-              "buildTarget": "horizon-parrainage:build:development"
+              "buildTarget": "easy-group:build:development"
             }
           },
           "defaultConfiguration": "development"
