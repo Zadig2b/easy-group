@@ -1,0 +1,34 @@
+services:
+  mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+
+  backend:
+    build:
+      context: ./base-back
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - mysql
+
+  frontend:
+    build:
+      context: ./base-front
+      target: ${TARGET_ENV:-dev}
+    ports:
+      - "${FRONT_PORT}:${CONTAINER_FRONT_PORT}"
+    environment:
+      - NODE_ENV=${TARGET_ENV:-dev}
+    depends_on:
+      - backend
