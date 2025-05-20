@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, tap, switchMap } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 export interface AuthUser {
   email: string;
@@ -15,13 +16,13 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  private readonly authUrl = 'http://localhost:8080/api/auth';
-  private readonly userUrl = 'http://localhost:8080/api/user';
+  private readonly authUrl = `${environment.apiBaseUrl}/auth`;
+  private readonly userUrl = `${environment.apiBaseUrl}/user`;
   private readonly isLoggedInSubject = new BehaviorSubject<boolean>(false);
   public readonly isLoggedIn$ = this.isLoggedInSubject.asObservable();
   constructor(private http: HttpClient) {
     this.restoreLoginState();
-    this.loadUserFromToken(); 
+    this.loadUserFromToken();
   }
 
   private restoreLoginState(): void {
@@ -34,7 +35,7 @@ export class AuthService {
   loadUserFromToken(): void {
     const token = this.getToken();
     if (token) {
-      this.http.get<AuthUser>('http://localhost:8080/api/user/me').subscribe({
+      this.http.get<AuthUser>(`${this.userUrl}/me`).subscribe({
         next: (user) => this.currentUserSubject.next(user),
         error: () => this.logout(), // token invalide ? on force logout
       });

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../../../environments/environment';
 
 interface GroupDto {
   name: string;
@@ -32,7 +33,7 @@ export class DrawHistoryComponent implements OnInit {
   ngOnInit(): void {
     if (this.listId) {
       this.http
-        .get<DrawDto[]>(`http://localhost:8080/api/lists/${this.listId}/draws`)
+        .get<DrawDto[]>(`${environment.apiBaseUrl}/lists/${this.listId}/draws`)
         .subscribe({
           next: (data) => {
             this.draws = data.sort(
@@ -53,7 +54,7 @@ export class DrawHistoryComponent implements OnInit {
   deleteDraw(drawId: number): void {
   if (!confirm('❌ Supprimer ce tirage ?')) return;
 
-  this.http.delete(`http://localhost:8080/api/lists/${this.listId}/draws/${drawId}`)
+  this.http.delete(`${environment.apiBaseUrl}/lists/${this.listId}/draws/${drawId}`)
     .subscribe({
       next: () => {
         this.draws = this.draws.filter(d => d.id !== drawId);
@@ -66,7 +67,7 @@ export class DrawHistoryComponent implements OnInit {
 
 refresh(): void {
   this.loading = true;
-  this.http.get<DrawDto[]>(`http://localhost:8080/api/lists/${this.listId}/draws`)
+  this.http.get<DrawDto[]>(`${environment.apiBaseUrl}/lists/${this.listId}/draws`)
     .subscribe({
           next: (data) => {
             this.draws = data.sort(

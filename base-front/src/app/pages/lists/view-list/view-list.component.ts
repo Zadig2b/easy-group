@@ -9,6 +9,7 @@ import { ListService } from '../../../core/services/list.service';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Person } from '../../../core/models/person.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-list',
@@ -70,7 +71,7 @@ export class ListComponent implements OnInit {
 
   loadPersons(): void {
     this.http
-      .get<Person[]>(`http://localhost:8080/api/lists/${this.listId}/persons`)
+      .get<Person[]>(`${environment.apiBaseUrl}/lists/${this.listId}/persons`)
       .subscribe({
         next: (data) => (this.persons = data),
         error: () => console.error('Erreur chargement des personnes'),

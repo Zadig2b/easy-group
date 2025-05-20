@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ListDto } from '../../core/models/list.model';
+import { environment } from '../../../environments/environment';
 
 
 
 @Injectable({ providedIn: 'root' })
 export class ListService {
-  private apiUrl = 'http://localhost:8080/api/lists';
+  private apiUrl = `${environment.apiBaseUrl}/lists`;
 
   constructor(private http: HttpClient) {}
 

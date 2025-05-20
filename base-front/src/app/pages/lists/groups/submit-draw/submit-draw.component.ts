@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Person } from '../../../../core/models/person.model';
 import { generateGroups } from '../../../../utils/group-generator';
 import { FormsModule } from '@angular/forms'; 
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-submit-draw',
@@ -32,7 +33,7 @@ export class SubmitDrawComponent {
     this.loading = true;
 
     this.http
-      .post(`http://localhost:8080/api/lists/${this.listId}/draws`, {
+      .post(`${environment.apiBaseUrl}/lists/${this.listId}/draws`, {
         groups: generatedGroups,
       })
       .subscribe({

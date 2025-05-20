@@ -2,6 +2,7 @@ import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-person-form',
@@ -35,7 +36,7 @@ export class PersonFormComponent {
 
   submit(): void {
     if (this.personForm.valid && this.listId) {
-      this.http.post(`http://localhost:8080/api/lists/${this.listId}/persons`, this.personForm.value).subscribe(() => {
+      this.http.post(`${environment.apiBaseUrl}/lists/${this.listId}/persons`, this.personForm.value).subscribe(() => {
         this.message = '✅ Personne ajoutée !';
         this.personForm.reset({
           name: '',

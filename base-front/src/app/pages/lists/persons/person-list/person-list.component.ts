@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-person-list',
@@ -73,7 +74,7 @@ export class PersonListComponent implements OnChanges {
 
     this.loading = true;
     this.http
-      .get<any[]>(`http://localhost:8080/api/lists/${this.listId}/persons`)
+      .get<any[]>(`${environment.apiBaseUrl}/lists/${this.listId}/persons`)
       .subscribe({
         next: (data) => {
           this.persons = data.map((p) => this.mapPersonToDisplay(p));
@@ -87,7 +88,7 @@ export class PersonListComponent implements OnChanges {
 
   deletePerson(id: number): void {
     this.http
-      .delete(`http://localhost:8080/api/lists/${this.listId}/persons/${id}`)
+      .delete(`${environment.apiBaseUrl}/lists/${this.listId}/persons/${id}`)
       .subscribe({
         next: () => {
           this.persons = this.persons.filter((p) => p.id !== id); // suppression directe locale
