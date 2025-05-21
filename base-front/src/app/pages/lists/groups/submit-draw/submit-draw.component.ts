@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { environment } from '../../../../../environments/environment';
 import { DrawDto } from '../../../../core/models/draw.dto';
+import { OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-submit-draw',
@@ -42,7 +43,16 @@ ngOnInit(): void {
   });
 }
 
-
+ ngOnChanges(changes: SimpleChanges): void {
+    if (changes['persons'] && this.drawForm) {
+      const groupCount = this.drawForm.get('groupCount');
+      groupCount?.setValidators([
+        Validators.required,
+        Validators.min(1),
+        Validators.max(this.persons.length),
+      ]);
+      groupCount?.updateValueAndValidity();
+    }}
   generateAndSubmitGroups() {
     if (this.drawForm.invalid) {
       this.message = 'Veuillez remplir correctement le formulaire.';
