@@ -1,26 +1,30 @@
-<div class="submit-draw-panel mt-5" *ngIf="persons.length > 0">
+<div class="submit-draw-panel mt-5" *ngIf="persons.length > 0" [formGroup]="drawForm">
   <div class="input-group mb-3">
-  <span class="input-group-text">Titre du tirage</span>
-  <input
-    type="text"
-    class="form-control"
-    placeholder="Ex: Tirage du 20 mai"
-    [(ngModel)]="drawTitle"
-  />
-</div>
+    <span class="input-group-text">Titre du tirage</span>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Ex: Tirage du 20 mai"
+      formControlName="drawTitle"
+    />
+  </div>
 
   <div class="input-group">
     <span class="input-group-text">Taille des groupes</span>
     <input
       class="form-control"
       type="number"
-      [(ngModel)]="groupCount"
       min="1"
       [max]="persons.length"
+      formControlName="groupCount"
     />
   </div>
 
-  <button class="btn-primary-custom mt-3" (click)="generateAndSubmitGroups()" [disabled]="loading || persons.length === 0">
+  <button
+    class="btn-primary-custom mt-3"
+    (click)="generateAndSubmitGroups()"
+    [disabled]="loading || persons.length === 0"
+  >
     🎲 Générer et enregistrer les groupes
   </button>
 

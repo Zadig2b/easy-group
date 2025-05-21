@@ -42,11 +42,10 @@
 <app-submit-draw
   [listId]="listId"
   [persons]="persons"
-  [groupCount]="groupCount"
   [refreshList]="refreshList.bind(this)"
-    (drawSubmitted)="onDrawSubmitted()"
-
+  (drawSubmitted)="onDrawSubmitted()"
 ></app-submit-draw>
+
 
 
 <app-draw-history #drawHistory [listId]="listId"></app-draw-history>

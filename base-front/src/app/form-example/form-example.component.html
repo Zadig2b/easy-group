@@ -1,0 +1,57 @@
+
+<form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+  <!-- Champ Nom -->
+  <div>
+    <label for="name">Nom :</label>
+    <input id="name" formControlName="name" />
+
+    @if (myForm.get('name')?.touched && myForm.get('name')?.invalid) {
+      <div>
+        @if (myForm.get('name')?.errors?.['required']) {
+          <small>Le nom est requis.</small>
+        }
+        @if (myForm.get('name')?.errors?.['minlength']) {
+          <small>Au moins 2 caractères.</small>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Champ Email -->
+  <div>
+    <label for="email">Email :</label>
+    <input id="email" formControlName="email" />
+
+    @if (myForm.get('email')?.touched && myForm.get('email')?.invalid) {
+      <div>
+        @if (myForm.get('email')?.errors?.['required']) {
+          <small>L’email est requis.</small>
+        }
+        @if (myForm.get('email')?.errors?.['email']) {
+          <small>Format d’email invalide.</small>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Champ Âge -->
+  <div>
+    <label for="age">Âge :</label>
+    <input id="age" type="number" formControlName="age" />
+
+    @if (myForm.get('age')?.touched && myForm.get('age')?.invalid) {
+      <div>
+        @if (myForm.get('age')?.errors?.['required']) {
+          <div>L’âge est requis.</div>
+        }
+        @if (myForm.get('age')?.errors?.['min']) {
+          <small>Âge minimum requis : 18 ans.</small>
+        }
+      </div>
+    }
+  </div>
+
+{{ myForm.get('name')?.value }}
+
+  <button type="submit">Valider</button>
+</form>

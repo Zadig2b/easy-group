@@ -1,46 +1,60 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Person } from '../../../../core/models/person.model';
 import { generateGroups } from '../../../../utils/group-generator';
-import { FormsModule } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormGroup,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 import { environment } from '../../../../../environments/environment';
 import { DrawDto } from '../../../../core/models/draw.dto';
+
 @Component({
   selector: 'app-submit-draw',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './submit-draw.component.html',
   styleUrl: './submit-draw.component.scss',
 })
-export class SubmitDrawComponent {
+export class SubmitDrawComponent implements OnInit {
   @Input() listId!: string;
   @Input() persons: Person[] = [];
-  @Input() groupCount: number = 2;
   @Input() refreshList: () => void = () => {};
-  @Output() drawSubmitted = new EventEmitter<void>(); // 👉 ici
+  @Output() drawSubmitted = new EventEmitter<void>();
 
   message = '';
   loading = false;
-  drawTitle: string = '';
+
+  drawForm!: FormGroup;
 
   constructor(private http: HttpClient) {}
 
+ngOnInit(): void {
+  this.drawForm = new FormGroup({
+    drawTitle: new FormControl('', Validators.required),
+    groupCount: new FormControl(2, [
+      Validators.required,
+      Validators.min(1),
+    ]),
+  });
+}
+
+
   generateAndSubmitGroups() {
-    if (
-      !this.groupCount ||
-      this.groupCount < 1 ||
-      this.groupCount > this.persons.length
-    ) {
-      this.message = 'Veuillez entrer une taille de groupe valide.';
+    if (this.drawForm.invalid) {
+      this.message = 'Veuillez remplir correctement le formulaire.';
+      this.drawForm.markAllAsTouched();
       return;
     }
 
-    const groups = generateGroups(this.persons, this.groupCount);
+    const { drawTitle, groupCount } = this.drawForm.value;
 
     const drawDto: DrawDto = {
-      title: this.drawTitle?.trim() || null,
-      groups: generateGroups(this.persons, this.groupCount),
+      title: drawTitle.trim() || null,
+      groups: generateGroups(this.persons, groupCount),
     };
 
     this.loading = true;
@@ -50,7 +64,7 @@ export class SubmitDrawComponent {
         next: () => {
           this.message = '🎉 Tirage enregistré avec succès !';
           this.drawSubmitted.emit();
-          this.drawTitle = '';
+          this.drawForm.reset({ drawTitle: '', groupCount: 2 });
           this.loading = false;
         },
         error: () => {
