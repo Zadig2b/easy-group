@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Person } from '../../../../core/models/person.model';
 import { generateGroups } from '../../../../utils/group-generator';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../../environments/environment';
-
+import { DrawDto } from '../../../../core/models/draw.dto';
 @Component({
   selector: 'app-submit-draw',
   standalone: true,
@@ -22,30 +22,39 @@ export class SubmitDrawComponent {
 
   message = '';
   loading = false;
+  drawTitle: string = '';
 
   constructor(private http: HttpClient) {}
 
-  generateAndSubmitGroups(): void {
-    const generatedGroups = generateGroups(this.persons, this.groupCount);
+  generateAndSubmitGroups() {
+    if (
+      !this.groupCount ||
+      this.groupCount < 1 ||
+      this.groupCount > this.persons.length
+    ) {
+      this.message = 'Veuillez entrer une taille de groupe valide.';
+      return;
+    }
 
-    if (!this.listId || generatedGroups.length === 0) return;
+    const groups = generateGroups(this.persons, this.groupCount);
+
+    const drawDto: DrawDto = {
+      title: this.drawTitle?.trim() || null,
+      groups: generateGroups(this.persons, this.groupCount),
+    };
 
     this.loading = true;
-
     this.http
-      .post(`${environment.apiBaseUrl}/lists/${this.listId}/draws`, {
-        groups: generatedGroups,
-      })
+      .post(`${environment.apiBaseUrl}/lists/${this.listId}/draws`, drawDto)
       .subscribe({
         next: () => {
-          this.message = '✅ Groupes enregistrés !';
-          this.refreshList();
-          this.drawSubmitted.emit(); 
-          // 👉 notifie le parent
+          this.message = '🎉 Tirage enregistré avec succès !';
+          this.drawSubmitted.emit();
+          this.drawTitle = '';
           this.loading = false;
         },
         error: () => {
-          this.message = '❌ Une erreur est survenue.';
+          this.message = "❌ Une erreur est survenue lors de l'enregistrement.";
           this.loading = false;
         },
       });

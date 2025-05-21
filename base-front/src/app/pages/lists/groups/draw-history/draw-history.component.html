@@ -6,16 +6,36 @@
   Aucun tirage enregistré pour cette liste.
 </div>
 
-<div *ngIf="!loading && draws.length > 0" class="draw-list primary-very-light p-3 rounded mt-5">
+<div
+  *ngIf="!loading && draws.length > 0"
+  class="draw-list primary-very-light p-3 rounded mt-5"
+>
   <h4 class="mb-4">📜 Historique des tirages</h4>
 
   <div *ngFor="let draw of draws" class="mb-5 primary-light p-4 rounded">
 <div class="d-flex justify-content-between align-items-center primary-lighter rounded p-2">
-  <h5 class=" mb-0">{{ draw.createdAt | date:'short' }}</h5>
-  <button class="btn-bg-white" (click)="deleteDraw(draw.id)">
-    🗑️ Supprimer
-  </button>
+  <!-- Date à gauche -->
+  <div class="text-white small">
+    {{ draw.createdAt | date : 'short' }}
+  </div>
+
+  <!-- Titre au centre -->
+  <div class="flex-grow-1 text-center">
+    <h5 class="mb-0">{{ draw.title || '(Sans titre)' }}</h5>
+  </div>
+
+  <!-- Bouton à droite -->
+  <div>
+    <button
+      *ngIf="draw.id"
+      class="btn-bg-white"
+      (click)="deleteDraw(draw.id)"
+    >
+      🗑️ Supprimer
+    </button>
+  </div>
 </div>
+
 
     <div class="row row-cols-1 row-cols-md-2 g-3 mt-2">
       <div class="col" *ngFor="let group of draw.groups">
@@ -32,11 +52,9 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </div>

@@ -1,4 +1,5 @@
 package com.base.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -6,9 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Draw {
+
+    @Column(nullable = true)
+    private String title;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

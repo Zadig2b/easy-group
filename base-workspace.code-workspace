@@ -18,6 +18,7 @@
   ],
   "settings": {
     "java.project.sourcePaths": ["src/main/java"],
-    "java.project.outputPath": "target/classes"
+    "java.project.outputPath": "target/classes",
+    "java.compile.nullAnalysis.mode": "disabled"
   }
 }

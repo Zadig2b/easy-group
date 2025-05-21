@@ -2,18 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../../../environments/environment';
-
-interface GroupDto {
-  name: string;
-  memberIds: number[];
-  memberNames: string[];
-}
-
-interface DrawDto {
-  id: number;
-  createdAt: string;
-  groups: GroupDto[];
-}
+import { GroupDto } from '../../../../core/models/group.dto';
+import { DrawDto } from '../../../../core/models/draw.dto';
 
 @Component({
   selector: 'app-draw-history',
@@ -36,11 +26,16 @@ export class DrawHistoryComponent implements OnInit {
         .get<DrawDto[]>(`${environment.apiBaseUrl}/lists/${this.listId}/draws`)
         .subscribe({
           next: (data) => {
-            this.draws = data.sort(
-              (a, b) =>
-                new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime()
-            );
+            this.draws = data
+              .filter(
+                (d): d is DrawDto & { createdAt: string } => !!d.createdAt
+              )
+              .sort(
+                (a, b) =>
+                  new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime()
+              );
+
             this.loading = false;
           },
 
@@ -52,36 +47,39 @@ export class DrawHistoryComponent implements OnInit {
   }
 
   deleteDraw(drawId: number): void {
-  if (!confirm('❌ Supprimer ce tirage ?')) return;
+    if (!confirm('❌ Supprimer ce tirage ?')) return;
 
-  this.http.delete(`${environment.apiBaseUrl}/lists/${this.listId}/draws/${drawId}`)
-    .subscribe({
-      next: () => {
-        this.draws = this.draws.filter(d => d.id !== drawId);
-      },
-      error: () => {
-        alert('Erreur lors de la suppression');
-      }
-    });
-}
+    this.http
+      .delete(`${environment.apiBaseUrl}/lists/${this.listId}/draws/${drawId}`)
+      .subscribe({
+        next: () => {
+          this.draws = this.draws.filter((d) => d.id !== drawId);
+        },
+        error: () => {
+          alert('Erreur lors de la suppression');
+        },
+      });
+  }
 
-refresh(): void {
-  this.loading = true;
-  this.http.get<DrawDto[]>(`${environment.apiBaseUrl}/lists/${this.listId}/draws`)
-    .subscribe({
-          next: (data) => {
-            this.draws = data.sort(
+  refresh(): void {
+    this.loading = true;
+    this.http
+      .get<DrawDto[]>(`${environment.apiBaseUrl}/lists/${this.listId}/draws`)
+      .subscribe({
+        next: (data) => {
+          this.draws = data
+            .filter((d): d is DrawDto & { createdAt: string } => !!d.createdAt)
+            .sort(
               (a, b) =>
                 new Date(b.createdAt).getTime() -
                 new Date(a.createdAt).getTime()
             );
-            this.loading = false;
-          },
-      error: () => {
-        this.loading = false;
-      }
-    });
-}
 
-
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
+  }
 }

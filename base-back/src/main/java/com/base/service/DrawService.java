@@ -40,6 +40,7 @@ public class DrawService {
         Draw draw = new Draw();
         draw.setList(list);
         draw.setCreatedAt(LocalDateTime.now());
+        draw.setTitle(dto.getTitle());
 
         List<GroupEntity> savedGroups = new ArrayList<>();
 
@@ -66,7 +67,7 @@ public class DrawService {
             DrawDto dto = new DrawDto();
             dto.setId(draw.getId());
             dto.setCreatedAt(draw.getCreatedAt().toString());
-
+            dto.setTitle(draw.getTitle());
             List<GroupDto> groups = draw.getGroups().stream().map(group -> {
                 GroupDto g = new GroupDto();
                 g.setName(group.getName());
