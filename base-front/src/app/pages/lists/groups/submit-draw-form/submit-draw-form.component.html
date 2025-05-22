@@ -1,0 +1,45 @@
+<div class="submit-draw-panel mt-5" *ngIf="persons.length > 0" [formGroup]="drawForm">
+  <!-- CHAMP TITRE -->
+  <div class="input-group mb-1">
+    <span class="input-group-text">Titre du tirage</span>
+    <input
+      type="text"
+      class="form-control"
+      [class.is-invalid]="drawForm.get('drawTitle')?.touched && drawForm.get('drawTitle')?.invalid"
+      placeholder="Ex: Tirage du 20 mai"
+      formControlName="drawTitle"
+    />
+  </div>
+  <div *ngIf="drawForm.get('drawTitle')?.touched && drawForm.get('drawTitle')?.hasError('required')" class="text-danger mb-2 ms-1">
+    Le titre est requis.
+  </div>
+
+  <!-- CHAMP GROUPE -->
+  <div class="input-group mb-1">
+    <span class="input-group-text">Taille des groupes</span>
+    <input
+      class="form-control"
+      type="number"
+      min="1"
+      [max]="persons.length"
+      [class.is-invalid]="drawForm.get('groupCount')?.touched && drawForm.get('groupCount')?.invalid"
+      formControlName="groupCount"
+    />
+  </div>
+  <div *ngIf="drawForm.get('groupCount')?.touched" class="text-danger mb-2 ms-1">
+    <div *ngIf="drawForm.get('groupCount')?.hasError('required')">Ce champ est requis.</div>
+    <div *ngIf="drawForm.get('groupCount')?.hasError('min')">Valeur minimale : 1.</div>
+    <div *ngIf="drawForm.get('groupCount')?.hasError('max')">Ne peut pas dépasser {{ persons.length }}.</div>
+  </div>
+
+  <!-- BOUTON -->
+  <button
+    class="btn-primary-custom mt-3"
+    (click)="onSubmit()"
+    [disabled]="loading || persons.length === 0"
+  >
+    🎲 Générer et enregistrer les groupes
+  </button>
+
+  <div *ngIf="message" class="alert alert-info mt-3">{{ message }}</div>
+</div>

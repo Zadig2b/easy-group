@@ -1,22 +1,21 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Person } from '../../../../core/models/person.model';
-import { generateGroups } from '../../../../utils/group-generator';
 import {
   ReactiveFormsModule,
   FormGroup,
   FormControl,
   Validators,
 } from '@angular/forms';
-import { environment } from '../../../../../environments/environment';
 import { DrawDto } from '../../../../core/models/draw.dto';
-import { OnChanges, SimpleChanges } from '@angular/core';
-
+import { SimpleChanges } from '@angular/core';
+import { SubmitDrawFormComponent } from '../submit-draw-form/submit-draw-form.component';
+import { DrawService } from '../../../../core/services/draw.service';
+import { GroupGeneratorService } from '../../../../core/services/group-generator.service';
 @Component({
   selector: 'app-submit-draw',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SubmitDrawFormComponent],
   templateUrl: './submit-draw.component.html',
   styleUrl: './submit-draw.component.scss',
 })
@@ -31,19 +30,19 @@ export class SubmitDrawComponent implements OnInit {
 
   drawForm!: FormGroup;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private drawService: DrawService,
+    private groupGeneratorService: GroupGeneratorService
+  ) {}
 
-ngOnInit(): void {
-  this.drawForm = new FormGroup({
-    drawTitle: new FormControl('', Validators.required),
-    groupCount: new FormControl(2, [
-      Validators.required,
-      Validators.min(1),
-    ]),
-  });
-}
+  ngOnInit(): void {
+    this.drawForm = new FormGroup({
+      drawTitle: new FormControl('', Validators.required),
+      groupCount: new FormControl(2, [Validators.required, Validators.min(1)]),
+    });
+  }
 
- ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['persons'] && this.drawForm) {
       const groupCount = this.drawForm.get('groupCount');
       groupCount?.setValidators([
@@ -52,8 +51,9 @@ ngOnInit(): void {
         Validators.max(this.persons.length),
       ]);
       groupCount?.updateValueAndValidity();
-    }}
-  generateAndSubmitGroups() {
+    }
+  }
+  generateAndSubmitGroups(): void {
     if (this.drawForm.invalid) {
       this.message = 'Veuillez remplir correctement le formulaire.';
       this.drawForm.markAllAsTouched();
@@ -64,23 +64,25 @@ ngOnInit(): void {
 
     const drawDto: DrawDto = {
       title: drawTitle.trim() || null,
-      groups: generateGroups(this.persons, groupCount),
+      groups: this.groupGeneratorService.generateGroups(
+        this.persons,
+        groupCount
+      ),
     };
 
     this.loading = true;
-    this.http
-      .post(`${environment.apiBaseUrl}/lists/${this.listId}/draws`, drawDto)
-      .subscribe({
-        next: () => {
-          this.message = '🎉 Tirage enregistré avec succès !';
-          this.drawSubmitted.emit();
-          this.drawForm.reset({ drawTitle: '', groupCount: 2 });
-          this.loading = false;
-        },
-        error: () => {
-          this.message = "❌ Une erreur est survenue lors de l'enregistrement.";
-          this.loading = false;
-        },
-      });
+
+    this.drawService.submitDraw(this.listId, drawDto).subscribe({
+      next: () => {
+        this.message = '🎉 Tirage enregistré avec succès !';
+        this.drawSubmitted.emit();
+        this.drawForm.reset({ drawTitle: '', groupCount: 2 });
+        this.loading = false;
+      },
+      error: () => {
+        this.message = "❌ Une erreur est survenue lors de l'enregistrement.";
+        this.loading = false;
+      },
+    });
   }
 }
