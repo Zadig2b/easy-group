@@ -15,6 +15,7 @@ import { environment } from '../../../../../environments/environment';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './person-list.component.html',
+  styleUrls: ['./person-list.component.scss'],
 })
 export class PersonListComponent implements OnChanges {
   @Input() listId!: string;

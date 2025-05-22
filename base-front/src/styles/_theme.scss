@@ -5,6 +5,10 @@
 $theme-color: $primary; // ex : $primary ou $secondary
 $btn-color: $primary;
 
+// 🟦 Radius (coins arrondis)
+$radius: 0.5rem;
+$radius-sm: 0.25rem;
+
 // 🔹 Dérivés standards
 $theme-light: color.adjust($theme-color, $lightness: 10%);
 $theme-lighter: color.adjust($theme-color, $lightness: 25%);
