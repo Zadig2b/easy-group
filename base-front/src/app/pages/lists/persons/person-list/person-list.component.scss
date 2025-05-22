@@ -1,14 +1,14 @@
 @use "theme" as *;
 @use "colors" as *;
 @use "sass:color";
-@use 'card';
-@use 'btn';
+@use "card";
+@use "btn";
 
 .custom-badge {
   display: inline-block;
   padding: 0.35em 0.65em;
-//   font-size: 0.75rem;
-//   font-weight: 600;
+  //   font-size: 0.75rem;
+  //   font-weight: 600;
   line-height: 1;
   color: white;
   background-color: $primary;
@@ -17,6 +17,26 @@
 }
 
 .person-list-container {
+  @media (max-width: 768px) {
+    .person-list-title {
+      font-size: 1.25rem;
+    }
+
+    .custom-table {
+      font-size: 0.875rem;
+      min-width: 650px;
+    }
+
+    .custom-badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .btn-small {
+      font-size: 0.75rem;
+    }
+  }
+
   .person-list-title {
     color: $primary;
   }
@@ -33,23 +53,23 @@
     overflow-x: auto;
   }
 
-.custom-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
+  .custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
 
-  th, td {
-    padding: 0.75rem;
-    text-align: center; // 🔁 centrage horizontal
-    border-bottom: 1px solid $grey-200;
-    word-wrap: break-word; // ⛑ évite les débordements de texte
+    th,
+    td {
+      padding: 0.75rem;
+      text-align: center; // 🔁 centrage horizontal
+      border-bottom: 1px solid $grey-200;
+      word-wrap: break-word; // ⛑ évite les débordements de texte
+    }
+
+    //   thead {
+    //     background-color: $light;
+    //   }
   }
-
-//   thead {
-//     background-color: $light;
-//   }
-}
-
 
   .badge-level {
     @extend .custom-badge;
