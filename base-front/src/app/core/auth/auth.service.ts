@@ -48,7 +48,7 @@ export class AuthService {
         tap((response) => {
           localStorage.setItem('jwt', response.token);
         }),
-        switchMap(() => this.loadCurrentUser()) // 👈 on attend ici
+        switchMap(() => this.loadCurrentUser()) 
       );
   }
 

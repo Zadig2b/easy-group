@@ -26,7 +26,7 @@ export class JwtInterceptor implements HttpInterceptor {
   }
 }
 
-// 👇 Fournit ce service dans les providers globaux
+// fournir le service dans les providers globaux
 export const jwtInterceptorProvider = {
   provide: HTTP_INTERCEPTORS,
   useClass: JwtInterceptor,
