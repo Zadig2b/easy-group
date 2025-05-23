@@ -1,7 +1,7 @@
 <div class="container mt-5" style="max-width: 400px;">
     <h2 class="mb-4 text-center">Connexion</h2>
   
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="mb-3">
         <label for="email" class="form-label">Email</label>
         <input

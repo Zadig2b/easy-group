@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../../environments/environment';
-import { GroupDto } from '../../../core/models/group.dto';
 import { DrawDto } from '../../../core/models/draw.dto';
 
 @Component({

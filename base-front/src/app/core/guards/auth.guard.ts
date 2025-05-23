@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, UrlTree } from '@angular/router';
-import { AuthService } from '../auth/auth.service'; // Assurez-vous que le chemin est correct
+import {
+  CanActivate,
+  Router,
+  UrlTree,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+} from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -8,11 +16,27 @@ import { AuthService } from '../auth/auth.service'; // Assurez-vous que le chemi
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(): boolean | UrlTree {
-    if (this.authService.isLoggedIn()) {
-      return true;
-    } else {
-      return this.router.parseUrl('/login');
-    }
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean | UrlTree> {
+    return this.authService.loadUserFromToken().pipe(
+      map((user) => {
+        if (user) {
+          return true;
+        } else {
+          return this.router.createUrlTree(['/login'], {
+            queryParams: { returnUrl: state.url },
+          });
+        }
+      }),
+      catchError(() =>
+        of(
+          this.router.createUrlTree(['/login'], {
+            queryParams: { returnUrl: state.url },
+          })
+        )
+      )
+    );
   }
 }

@@ -1,13 +1,19 @@
-// @use 'variables' as *;
+@use "theme" as *;
+@use "colors" as *;
+@use "sass:color";
+@use "card";
+@use "btn";
 
-// .custom-bg {
-//   background-color: $custom-bg;
-// }
 
-// .custom-bg-light {
-//   background-color: $custom-bg-light;
-// }
-
-// .custom-bg-dark {
-//   background-color: $custom-bg-dark;
-// }
+.custom-badge {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  //   font-size: 0.75rem;
+    font-weight: 600;
+  line-height: 1;
+  color: white;
+  background-color: $primary;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  margin: 10px;
+}

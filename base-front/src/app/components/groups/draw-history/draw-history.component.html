@@ -10,7 +10,11 @@
   *ngIf="!loading && draws.length > 0"
   class="draw-list primary-very-light p-3 rounded mt-5"
 >
-  <h4 class="mb-4">📜 Historique des tirages</h4>
+<div class="d-flex justify-content-evenly align-items-center mb-4">
+    <span>📜</span>
+  <h4 class="mb-0"> Historique des tirages</h4>
+  <span class=" custom-badge">{{ draws.length }}</span>
+</div>
 
   <div *ngFor="let draw of draws" class="mb-5 primary-light p-4 rounded">
 <div class="d-flex justify-content-between align-items-center primary-lighter rounded p-2">

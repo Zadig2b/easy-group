@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router'; // en haut
 import { map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 export interface AuthUser {
   email: string;
@@ -25,15 +26,24 @@ export class AuthService {
     this.loadUserFromToken();
   }
 
-  loadUserFromToken(): void {
-    const token = this.getToken();
-    if (token) {
-      this.http.get<AuthUser>(`${this.userUrl}/me`).subscribe({
-        next: (user) => this.currentUserSubject.next(user),
-        error: () => this.logout(), // token invalide ? on force logout
-      });
-    }
+loadUserFromToken(): Observable<AuthUser | null> {
+  const token = this.getToken();
+  if (!token) {
+    return of(null);
   }
+
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  return this.http.get<AuthUser>(`${this.userUrl}/me`, { headers }).pipe(
+    tap((user) => this.currentUserSubject.next(user)),
+    map((user) => user),
+    catchError(() => {
+      this.logout();
+      return of(null);
+    })
+  );
+}
+
   login(email: string, password: string): Observable<AuthUser> {
     return this.http
       .post<{ token: string }>(`${this.authUrl}/login`, { email, password })
