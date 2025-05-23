@@ -1,4 +1,3 @@
-// src/app/config/app.config.ts
 import { InjectionToken } from '@angular/core';
 import { environment } from './../../environments/environment';
 

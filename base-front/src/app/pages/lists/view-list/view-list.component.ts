@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { PersonFormComponent } from '../persons/person-form/person-form.component';
-import { PersonListComponent } from '../persons/person-list/person-list.component';
-import { SubmitDrawComponent } from '../groups/submit-draw/submit-draw.component';
-import { DrawHistoryComponent } from '../groups/draw-history/draw-history.component';
+import { PersonFormComponent } from '../../../components/persons/person-form/person-form.component';
+import { PersonListComponent } from '../../../components/persons/person-list/person-list.component';
+import { SubmitDrawComponent } from '../../../components/groups/submit-draw/submit-draw.component';
+import { DrawHistoryComponent } from '../../../components/groups/draw-history/draw-history.component';
 import { ListService } from '../../../core/services/list.service';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';

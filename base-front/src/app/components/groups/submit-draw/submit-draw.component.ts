@@ -1,17 +1,17 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Person } from '../../../../core/models/person.model';
+import { Person } from '../../../core/models/person.model';
 import {
   ReactiveFormsModule,
   FormGroup,
   FormControl,
   Validators,
 } from '@angular/forms';
-import { DrawDto } from '../../../../core/models/draw.dto';
+import { DrawDto } from '../../../core/models/draw.dto';
 import { SimpleChanges } from '@angular/core';
 import { SubmitDrawFormComponent } from '../submit-draw-form/submit-draw-form.component';
-import { DrawService } from '../../../../core/services/draw.service';
-import { GroupGeneratorService } from '../../../../core/services/group-generator.service';
+import { DrawService } from '../../../core/services/draw.service';
+import { GroupGeneratorService } from '../../../core/services/group-generator.service';
 @Component({
   selector: 'app-submit-draw',
   standalone: true,
