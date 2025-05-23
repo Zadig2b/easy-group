@@ -1,18 +1,14 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Ignorer tous les fichiers d'environnement
-/src/environments/environment*.ts
-
-# Sauf le fichier environment.model.ts (le garder dans le repo)
-!src/environments/environment.model.ts
 
 # Compiled output
 /dist
 /tmp
 /out-tsc
 /bazel-out
-environment.ts
-environment.prod.ts
+# environment.ts
+# environment.prod.ts
+
 # Node
 /node_modules
 npm-debug.log
