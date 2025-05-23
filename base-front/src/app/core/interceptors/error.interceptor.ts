@@ -19,7 +19,7 @@ export class ErrorInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        if ([401, 403].includes(error.status)) {
+        if ([401].includes(error.status)) {
           localStorage.removeItem('jwt');
           this.router.navigate(['/auth/login']);
         }

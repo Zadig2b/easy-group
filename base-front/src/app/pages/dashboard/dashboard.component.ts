@@ -16,15 +16,20 @@ export class DashboardComponent implements OnInit {
 
   constructor(private listService: ListService) {}
 
-  ngOnInit(): void {
-    this.listService.getUserLists().subscribe({
-      next: (data) => {
-        this.lists = data;
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-      },
-    });
-  }
+error = false;
+
+ngOnInit(): void {
+  this.listService.getUserLists().subscribe({
+    next: (data) => {
+      this.lists = data;
+      this.loading = false;
+    },
+    error: (err) => {
+      console.error('Erreur Dashboard :', err);
+      this.error = true;
+      this.loading = false;
+    },
+  });
+}
+
 }

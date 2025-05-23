@@ -6,10 +6,8 @@ import { PersonListComponent } from '../../../components/persons/person-list/per
 import { SubmitDrawComponent } from '../../../components/groups/submit-draw/submit-draw.component';
 import { DrawHistoryComponent } from '../../../components/groups/draw-history/draw-history.component';
 import { ListService } from '../../../core/services/list.service';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Person } from '../../../core/models/person.model';
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-list',
@@ -27,7 +25,6 @@ import { environment } from '../../../../environments/environment';
 export class ListComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private listService = inject(ListService);
-  private http = inject(HttpClient);
 
   listId = this.route.snapshot.paramMap.get('listId')!;
   listName = '';
@@ -39,8 +36,9 @@ export class ListComponent implements OnInit {
   persons: Person[] = [];
   generatedGroupsFromFrontend: { name: string; memberIds: number[] }[] = [];
   groupCount = 2;
-  // 👉 Référence au composant enfant DrawHistoryComponent
+
   @ViewChild(DrawHistoryComponent) drawHistoryComponent!: DrawHistoryComponent;
+
   ngOnInit(): void {
     this.loadListDetails();
     this.loadPersons();
@@ -70,12 +68,9 @@ export class ListComponent implements OnInit {
   }
 
   loadPersons(): void {
-    this.http
-      .get<Person[]>(`${environment.apiBaseUrl}/lists/${this.listId}/persons`)
-      .subscribe({
-        next: (data) => (this.persons = data),
-        error: () => console.error('Erreur chargement des personnes'),
-      });
+    this.listService.getListPersons(+this.listId).subscribe(data => {
+      this.persons = data;
+    });
   }
 
   refreshList(): void {
@@ -84,7 +79,6 @@ export class ListComponent implements OnInit {
     this.loadPersons();
   }
 
-  // 👉 Appelé après la soumission d'un tirage
   onDrawSubmitted(): void {
     this.refreshList();
     if (this.drawHistoryComponent) {

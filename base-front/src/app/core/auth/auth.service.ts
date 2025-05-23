@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, tap, switchMap } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router'; // en haut
+import { map } from 'rxjs/operators';
 
 export interface AuthUser {
   email: string;
@@ -18,18 +20,9 @@ export class AuthService {
 
   private readonly authUrl = `${environment.apiBaseUrl}/auth`;
   private readonly userUrl = `${environment.apiBaseUrl}/user`;
-  private readonly isLoggedInSubject = new BehaviorSubject<boolean>(false);
-  public readonly isLoggedIn$ = this.isLoggedInSubject.asObservable();
-  constructor(private http: HttpClient) {
-    this.restoreLoginState();
+  public readonly isLoggedIn$ = this.currentUser$.pipe(map((user) => !!user));
+  constructor(private http: HttpClient, private router: Router) {
     this.loadUserFromToken();
-  }
-
-  private restoreLoginState(): void {
-    const token = this.getToken();
-    if (token) {
-      this.isLoggedInSubject.next(true);
-    }
   }
 
   loadUserFromToken(): void {
@@ -48,7 +41,7 @@ export class AuthService {
         tap((response) => {
           localStorage.setItem('jwt', response.token);
         }),
-        switchMap(() => this.loadCurrentUser()) 
+        switchMap(() => this.loadCurrentUser())
       );
   }
 
@@ -59,6 +52,7 @@ export class AuthService {
         tap((response) => {
           localStorage.setItem('jwt', response.token);
           this.loadCurrentUser().subscribe(); // Charger l'utilisateur après register
+          this.router.navigate(['/dashboard']);
         })
       );
   }
@@ -74,9 +68,10 @@ export class AuthService {
       .pipe(tap((user) => this.currentUserSubject.next(user)));
   }
 
-  logout() {
+  logout(): void {
     localStorage.removeItem('jwt');
     this.currentUserSubject.next(null);
+    this.router.navigate(['/']);
   }
 
   isLoggedIn(): boolean {
