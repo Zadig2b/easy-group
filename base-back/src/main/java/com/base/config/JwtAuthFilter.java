@@ -23,30 +23,45 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+@Override
+protected void doFilterInternal(HttpServletRequest request,
+                                HttpServletResponse response,
+                                FilterChain filterChain) throws ServletException, IOException {
 
-        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String token = authHeader.substring(7);
-        String email = jwtUtils.getEmailFromToken(token);
-
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            userRepository.findByEmail(email).ifPresent(user -> {
-                var authToken = new UsernamePasswordAuthenticationToken(
-                        user, null, null
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            });
-        }
-
+    String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
         filterChain.doFilter(request, response);
+        return;
     }
+
+    String token = authHeader.substring(7);
+    String email;
+
+    try {
+        email = jwtUtils.getEmailFromToken(token);
+    } catch (io.jsonwebtoken.ExpiredJwtException e) {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+        response.setContentType("application/json");
+        response.getWriter().write("{\"message\": \"JWT expired\"}");
+        return;
+    } catch (io.jsonwebtoken.JwtException e) {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+        response.setContentType("application/json");
+        response.getWriter().write("{\"message\": \"Invalid token\"}");
+        return;
+    }
+
+    if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        userRepository.findByEmail(email).ifPresent(user -> {
+            var authToken = new UsernamePasswordAuthenticationToken(
+                    user, null, null
+            );
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+        });
+    }
+
+    filterChain.doFilter(request, response);
+}
+
 }

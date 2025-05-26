@@ -1,5 +1,12 @@
-<div class="hero-header text-white text-center d-flex align-items-center justify-content-center mb-5"
-     style="background-image: url('images/2_md.jpg'); background-size: cover; background-position: center; height: 300px;">
+<div
+  class="hero-header text-white text-center d-flex align-items-center justify-content-center mb-5"
+  style="
+    background-image: url('images/2_md.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+  "
+>
   <div class="bg-dark bg-opacity-50 p-3 rounded">
     <h1 class="display-5">Bienvenue dans votre Promo</h1>
     <p class="lead mb-0">Gérez vos groupes en toute simplicité</p>
@@ -7,23 +14,24 @@
 </div>
 
 <div class="mt-5">
-
   <div *ngIf="loading" class="text-center my-5">
     <div class="spinner-border text-primary" role="status"></div>
   </div>
 
   <div *ngIf="!loading && !error">
     <h2 class="mb-4">
-      🎓  Promo : <span class="text-primary">{{ listName }}</span>
+      🎓 Promo : <span class="text-primary">{{ listName }}</span>
     </h2>
-    <p><strong>{{ personCount }}</strong> personne(s) dans cette Promo</p>
+    <p>
+      <strong>{{ personCount }}</strong> personne(s) dans cette Promo
+    </p>
 
-<app-person-list
-  [listId]="listId"
-  [refreshToken]="refreshToken"
-  (personDeleted)="onPersonDeleted($event)">
-</app-person-list>
-
+    <app-person-list
+      [listId]="listId"
+      [refreshToken]="refreshToken"
+      (personDeleted)="onPersonDeleted($event)"
+    >
+    </app-person-list>
 
     <hr class="my-4" />
 
@@ -34,10 +42,10 @@
   </div>
 
   <div *ngIf="error && !loading" class="alert alert-danger">
-    ❌ Impossible de charger la Promo. Vérifiez vos droits ou réessayez plus tard.
+    ❌ Impossible de charger la Promo. Vérifiez vos droits ou réessayez plus
+    tard.
   </div>
 </div>
-
 
 <app-submit-draw
   [listId]="listId"
@@ -45,7 +53,5 @@
   [refreshList]="refreshList.bind(this)"
   (drawSubmitted)="onDrawSubmitted()"
 ></app-submit-draw>
-
-
 
 <app-draw-history #drawHistory [listId]="listId"></app-draw-history>
