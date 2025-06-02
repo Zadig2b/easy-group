@@ -72,10 +72,6 @@ main.flex-fill {
   box-shadow: 0 6px 20px rgba($theme-color, 0.3);
 }
 
-.bg-ghost {
-  background-color: $theme-ghost;
-  color: $theme-color;
-}
 
 .border-primary-soft {
   border: 1px solid $theme-border;
@@ -85,3 +81,15 @@ main.flex-fill {
   color: color.adjust($theme-color, $lightness: 20%);
 }
 
+.bg-translucent {
+  background-color: $theme-translucent;
+}
+
+.bg-transparent {
+  background-color: $theme-transparent;
+}
+
+.bg-ghost {
+  background-color: $theme-ghost;
+  color: $theme-color;
+}

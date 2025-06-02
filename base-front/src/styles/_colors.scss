@@ -1,14 +1,27 @@
-$primary: #172439;
-$secondary: #a57d20;
-$tertiary:#253917;
-$quatre:#52773a;
-$cinq:#385772;
+// 🎨 Palette de base personnalisée (noms neutres et logiques)
+$color-1: #172439; // bleu nuit
+$color-2: #a57d20; // doré foncé
+$color-3: #253917; // vert sombre
+$color-4: #52773a; // vert mousse
+$color-5: #385772; // bleu acier
+$color-6: #bbcdd1; // bleu-gris clair
 
-// Couleurs additionnelles (définies ici si absentes de _colors.scss)
-$info: #bbcdd1;
-$success: #87b8a1;
-$danger: #b17178;
-$warning: #dfc780;
-$dark: #212529;
-$light: #f8f9fa;
-$grey-200: #e9ecef; // gris clair standard pour bordures/tables
+
+$color-7: #87b8a1; // vert pastel
+$color-8: #b17178; // rouge fané
+$color-9: #dfc780; // jaune doux
+$color-10: #e9ecef; // gris clair
+
+// 🎯 Mapping vers les rôles Bootstrap
+$primary:   $color-5;
+$secondary: $color-2;
+$tertiary:  $color-3;
+
+
+$success:   $color-7;
+$danger:    $color-8;
+$warning:   $color-9;
+$info:      $color-6;
+$light:     #f8f9fa;
+$dark:      #212529;
+$grey-200:  $color-10;

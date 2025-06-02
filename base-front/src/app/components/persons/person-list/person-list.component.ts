@@ -39,8 +39,8 @@ export class PersonListComponent implements OnChanges {
       genderLabel: this.getGenderLabel(p.gender),
       profileLabel: this.getProfileLabel(p.profile),
       oldDwwmLabel: p.oldDwwm ? 'Ancien DWWM' : 'Nouveau DWWM',
-      frenchLevelLabel: `${p.frenchLevel}/5`,
-      techLevelLabel: `${p.techLevel}/5`,
+      frenchLevelLabel: `${p.frenchLevel}`,
+      techLevelLabel: `${p.techLevel}`,
     };
   }
 

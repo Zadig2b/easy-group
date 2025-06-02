@@ -17,3 +17,12 @@
   padding: 1rem;
   color: white;
 }
+
+.card-details {
+  font-size: 1.1rem; // Texte un peu plus grand
+  // font-weight: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; // Espacement entre les lignes
+  margin-bottom: 1rem;
+}
