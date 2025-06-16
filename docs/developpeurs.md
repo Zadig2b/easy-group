@@ -1,34 +1,60 @@
-# Guide développeur
+# Guide développeur 🚀
 
-Cette section décrit comment configurer et lancer l'application en environnement de développement.
+Ce guide explique comment installer et contribuer à EasyGroup en local.
 
-## Prérequis
+## Pré-requis 🧰
 
-- Node.js (version 18 ou supérieure)
+- Node.js **18+**
 - Angular CLI
-- Java 17+
+- Java **17+**
 - Maven
 - MySQL
-- Docker (optionnel)
+- Docker *(optionnel)*
 
-## Installation
+## Arborescence du projet 📁
 
-1. Copiez le fichier `.env.dev.example` à la racine en `.env` et renseignez vos paramètres MySQL.
-2. Dans `base-back/src/main/resources`, renommez `application-local.properties.example` en `application-local.properties` puis indiquez vos identifiants MySQL.
-3. Exécutez :
+```
+base-front/    # Application Angular
+base-back/     # API Spring Boot
+.env           # Variables d'environnement
+Dockerfile / docker-compose.yml
+```
+
+## Configuration ⚙️
+
+1. Copier `.env.dev.example` en `.env` à la racine puis renseigner vos identifiants MySQL.
+2. Renommer `base-back/src/main/resources/application-local.properties.example` en `application-local.properties` et y mettre les mêmes informations.
+
+## Initialisation 🏗️
+
+À la racine, lancez :
 
 ```bash
 npm run init:project
 ```
 
-Cette commande installe les dépendances et initialise la base de données.
+Cette commande installe toutes les dépendances et crée la base.
 
-4. Lancez ensuite l'application complète :
+## Démarrage en local ▶️
 
 ```bash
 npm run start:all
 ```
 
-Le frontend Angular et le backend Spring Boot démarrent alors simultanément.
+Le frontend Angular et le backend Spring Boot se lancent ensemble.
 
+## Lancer les tests ✅
 
+- **Backend** :
+
+```bash
+./mvnw -q test
+```
+
+- **Frontend** :
+
+```bash
+npm test --silent
+```
+
+Les tests peuvent échouer si Maven ou Chrome ne sont pas disponibles. Consultez [`testconfig.md`](../testconfig.md) pour plus de détails.
