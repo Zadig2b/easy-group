@@ -2,6 +2,10 @@ package com.base.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -25,6 +29,15 @@ public class User {
     private String firstName;
     private String lastName;
 
+    @Column(nullable = false)
+    private boolean isActivated = false;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    private LocalDate cguDate;
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -38,5 +51,4 @@ public class User {
     public int hashCode() {
         return getClass().hashCode();
     }
-
 }
