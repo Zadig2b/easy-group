@@ -3,9 +3,13 @@ package com.base.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.time.Instant;
 import java.time.LocalDate;
+
+import com.base.entity.UserList;
 
 @Entity
 @Getter
@@ -29,8 +33,11 @@ public class User {
     private String firstName;
     private String lastName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isActivated = false;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserList> lists = new ArrayList<>();
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
