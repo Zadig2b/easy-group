@@ -8,6 +8,7 @@ import { ListComponent } from './pages/lists/view-list/view-list.component';
 import { ConditionsUtilisationComponent } from './pages/cgu/conditions-utilisation.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { LoginComponent } from './pages/auth/login/login.component';
+import { ConfirmEmailComponent } from './pages/auth/confirm/confirm-email.component';
 import { AccountComponent } from './pages/account/account.component';
 import { AuthGuard } from '../app/core/guards/auth.guard';
 
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/register', component: RegisterComponent },
+  { path: 'auth/confirm-email', component: ConfirmEmailComponent },
   { path: 'cgu', component: ConditionsUtilisationComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'mentions-legales', component: MentionsLegalesComponent },

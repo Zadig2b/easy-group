@@ -22,4 +22,10 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
+
+    @GetMapping("/confirm")
+    public ResponseEntity<?> confirm(@RequestParam String token) {
+        authService.confirmAccount(token);
+        return ResponseEntity.ok("Compte activé");
+    }
 }

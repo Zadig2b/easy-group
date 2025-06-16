@@ -1,17 +1,43 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
 
-import { authGuard } from './auth.guard';
+import { AuthGuard } from './auth.guard';
+import { AuthService } from '../auth/auth.service';
 
-describe('authGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => authGuard(...guardParameters));
+describe('AuthGuard', () => {
+  let guard: AuthGuard;
+  let authService: jasmine.SpyObj<AuthService>;
+  let router: jasmine.SpyObj<Router>;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    authService = jasmine.createSpyObj('AuthService', ['loadUserFromToken']);
+    router = jasmine.createSpyObj('Router', ['createUrlTree']);
+    TestBed.configureTestingModule({
+      providers: [
+        AuthGuard,
+        { provide: AuthService, useValue: authService },
+        { provide: Router, useValue: router },
+      ],
+    });
+    guard = TestBed.inject(AuthGuard);
   });
 
-  it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
+  it('allows activation when user is loaded', (done) => {
+    authService.loadUserFromToken.and.returnValue(of({ email: 't' } as any));
+    guard.canActivate({} as any, { url: '/' } as any).subscribe((result) => {
+      expect(result).toBeTrue();
+      done();
+    });
+  });
+
+  it('redirects when no user', (done) => {
+    const tree = {} as any;
+    router.createUrlTree.and.returnValue(tree);
+    authService.loadUserFromToken.and.returnValue(of(null));
+    guard.canActivate({} as any, { url: '/' } as any).subscribe((result) => {
+      expect(result).toBe(tree);
+      done();
+    });
   });
 });

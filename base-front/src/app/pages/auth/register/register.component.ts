@@ -27,8 +27,8 @@ export class RegisterComponent implements OnInit {
 
   onSubmit() {
     if (this.form.valid && this.passwordsMatch()) {
-      this.authService.register(this.form.value).subscribe(user => {
-        console.log('Inscription réussie', user);
+      this.authService.register(this.form.value).subscribe(() => {
+        this.form.reset();
       });
     } else {
       this.form.markAllAsTouched();

@@ -57,15 +57,11 @@ loadUserFromToken(): Observable<AuthUser | null> {
   }
 
   register(data: AuthUser & { password: string }): Observable<any> {
-    return this.http
-      .post<{ token: string }>(`${this.authUrl}/register`, data)
-      .pipe(
-        tap((response) => {
-          localStorage.setItem('jwt', response.token);
-          this.loadCurrentUser().subscribe(); // Charger l'utilisateur après register
-          this.router.navigate(['/dashboard']);
-        })
-      );
+    return this.http.post<{ message: string }>(`${this.authUrl}/register`, data).pipe(
+      tap(() => {
+        alert('Veuillez vérifier votre email pour activer votre compte.');
+      })
+    );
   }
 
   loadCurrentUser(): Observable<AuthUser> {
@@ -110,5 +106,9 @@ loadUserFromToken(): Observable<AuthUser | null> {
     // console.log(localStorage.getItem('jwt'));
 
     return localStorage.getItem('jwt');
+  }
+
+  confirmEmail(token: string) {
+    return this.http.get(`${this.authUrl}/confirm`, { params: { token } });
   }
 }
