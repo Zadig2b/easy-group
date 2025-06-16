@@ -1,12 +1,14 @@
 package com.base.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.base.entity.Person;
-import com.base.entity.Draw;
+
 
 @Entity
 @Getter

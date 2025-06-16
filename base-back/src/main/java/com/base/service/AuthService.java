@@ -4,7 +4,6 @@ import com.base.dto.*;
 import com.base.entity.User;
 import com.base.repository.UserRepository;
 import com.base.util.JwtUtils;
-import com.base.service.MailService;
 
 import java.time.Instant;
 import java.time.LocalDate;

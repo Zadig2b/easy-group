@@ -9,7 +9,6 @@ import java.util.List;
 import java.time.Instant;
 import java.time.LocalDate;
 
-import com.base.entity.UserList;
 
 @Entity
 @Getter
@@ -33,9 +32,11 @@ public class User {
     private String firstName;
     private String lastName;
 
+    @Builder.Default
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isActivated = false;
-
+    
+    @Builder.Default
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserList> lists = new ArrayList<>();
 
