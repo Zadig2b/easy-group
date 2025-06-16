@@ -8,6 +8,7 @@ import { ListComponent } from './pages/lists/view-list/view-list.component';
 import { ConditionsUtilisationComponent } from './pages/cgu/conditions-utilisation.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { LoginComponent } from './pages/auth/login/login.component';
+import { AccountComponent } from './pages/account/account.component';
 import { AuthGuard } from '../app/core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -26,6 +27,11 @@ export const routes: Routes = [
   {
     path: 'lists/create',
     component: CreateListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'account',
+    component: AccountComponent,
     canActivate: [AuthGuard],
   },
   { path: 'lists/:listId', component: ListComponent, canActivate: [AuthGuard] },

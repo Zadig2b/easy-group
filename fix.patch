@@ -1,0 +1,607 @@
+diff --git a/base-back/src/main/java/com/base/controller/UserController.java b/base-back/src/main/java/com/base/controller/UserController.java
+index 2b0e59406d3eb3e8faf33aac6946cda6892e03d9..d498ebe9e70f4ba49a3630d9c327319c6e9d5831 100644
+--- a/base-back/src/main/java/com/base/controller/UserController.java
++++ b/base-back/src/main/java/com/base/controller/UserController.java
+@@ -1,39 +1,81 @@
+ package com.base.controller;
+ 
+ import com.base.dto.UserDTO;
++import com.base.dto.UpdateUserRequest;
+ import com.base.repository.UserRepository;
+ import com.base.util.JwtUtils;
+ import jakarta.servlet.http.HttpServletRequest;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.http.ResponseEntity;
+ import org.springframework.web.bind.annotation.*;
+ 
+ @RestController
+ @RequestMapping("/api/user")
+ @RequiredArgsConstructor
+ public class UserController {
+ 
+     private final JwtUtils jwtUtils;
+     private final UserRepository userRepository;
+ 
+     @GetMapping("/me")
+     public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
+         String header = request.getHeader("Authorization");
+ 
+         if (header == null || !header.startsWith("Bearer ")) {
+             return ResponseEntity.status(401).body("Token manquant ou invalide");
+         }
+ 
+         String token = header.substring(7);
+         String email = jwtUtils.getEmailFromToken(token);
+ 
+         // On sépare le traitement
+         var userOpt = userRepository.findByEmail(email);
+         if (userOpt.isEmpty()) {
+             return ResponseEntity.status(404).body("Utilisateur non trouvé");
+         }
+ 
+         return ResponseEntity.ok(new UserDTO(userOpt.get()));
+     }
+ 
++    @PutMapping("/me")
++    public ResponseEntity<?> updateCurrentUser(@RequestBody UpdateUserRequest updateRequest,
++                                               HttpServletRequest request) {
++        String header = request.getHeader("Authorization");
++        if (header == null || !header.startsWith("Bearer ")) {
++            return ResponseEntity.status(401).body("Token manquant ou invalide");
++        }
++
++        String token = header.substring(7);
++        String email = jwtUtils.getEmailFromToken(token);
++        var userOpt = userRepository.findByEmail(email);
++        if (userOpt.isEmpty()) {
++            return ResponseEntity.status(404).body("Utilisateur non trouvé");
++        }
++
++        var user = userOpt.get();
++        user.setFirstName(updateRequest.getFirstName());
++        user.setLastName(updateRequest.getLastName());
++        userRepository.save(user);
++
++        return ResponseEntity.ok(new UserDTO(user));
++    }
++
++    @DeleteMapping("/me")
++    public ResponseEntity<?> deleteCurrentUser(HttpServletRequest request) {
++        String header = request.getHeader("Authorization");
++        if (header == null || !header.startsWith("Bearer ")) {
++            return ResponseEntity.status(401).body("Token manquant ou invalide");
++        }
++
++        String token = header.substring(7);
++        String email = jwtUtils.getEmailFromToken(token);
++        var userOpt = userRepository.findByEmail(email);
++        if (userOpt.isEmpty()) {
++            return ResponseEntity.status(404).body("Utilisateur non trouvé");
++        }
++
++        userRepository.delete(userOpt.get());
++        return ResponseEntity.ok().build();
++    }
++
+ }
+diff --git a/base-back/src/main/java/com/base/controller/UserListController.java b/base-back/src/main/java/com/base/controller/UserListController.java
+index cfd0a9b0c374b77cf266f9f7e0b4a65057a8ce5e..3ea0d09c4f61c9727c5fa7a57ea50aaf86b6b8d5 100644
+--- a/base-back/src/main/java/com/base/controller/UserListController.java
++++ b/base-back/src/main/java/com/base/controller/UserListController.java
+@@ -26,26 +26,31 @@ public class UserListController {
+     @GetMapping
+     public List<ListDto> getLists(@AuthenticationPrincipal User user) {
+         return listService.getListsByUser(user)
+                 .stream()
+                 .map(ListDto::new)
+                 .toList();
+     }
+ 
+     // ✅ Obtenir une liste par son ID (si l'utilisateur est propriétaire)
+     @GetMapping("/{id}")
+     public ListDto getListById(@PathVariable Long id, @AuthenticationPrincipal User user) {
+         UserList list = listService.getListsByUser(user)
+                 .stream()
+                 .filter(l -> l.getId().equals(id))
+                 .findFirst()
+                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Liste non trouvée"));
+         return new ListDto(list);
+     }
+ 
+     // ✅ Créer une liste
+     @PostMapping
+     public ListDto createList(@AuthenticationPrincipal User user, @RequestBody String name) {
+         UserList created = listService.create(user, name);
+         return new ListDto(created);
+     }
++
++    @DeleteMapping("/{id}")
++    public void deleteList(@PathVariable Long id, @AuthenticationPrincipal User user) {
++        listService.delete(user, id);
++    }
+ }
+diff --git a/base-back/src/main/java/com/base/dto/UpdateUserRequest.java b/base-back/src/main/java/com/base/dto/UpdateUserRequest.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..a28b8e5b865a3d79510afd82d844924d7a45ff99
+--- /dev/null
++++ b/base-back/src/main/java/com/base/dto/UpdateUserRequest.java
+@@ -0,0 +1,11 @@
++package com.base.dto;
++
++import lombok.Getter;
++import lombok.Setter;
++
++@Getter
++@Setter
++public class UpdateUserRequest {
++    private String firstName;
++    private String lastName;
++}
+diff --git a/base-back/src/main/java/com/base/service/UserListService.java b/base-back/src/main/java/com/base/service/UserListService.java
+index b5b7193e67aa0ed3bf5dc95e3cf7c18b78f752f4..49d22e5eb8cf4c68ae74a31cc6c6be154399a624 100644
+--- a/base-back/src/main/java/com/base/service/UserListService.java
++++ b/base-back/src/main/java/com/base/service/UserListService.java
+@@ -4,28 +4,34 @@ import com.base.entity.UserList;
+ import com.base.entity.User;
+ import com.base.repository.UserListRepository;
+ import org.springframework.stereotype.Service;
+ 
+ import java.util.List;
+ 
+ @Service
+ public class UserListService {
+     private final UserListRepository repository;
+ 
+     public UserListService(UserListRepository repository) {
+         this.repository = repository;
+     }
+ 
+     public List<UserList> getListsByUser(User user) {
+         return repository.findByOwner(user);
+     }
+ 
+     public UserList create(User user, String name) {
+         UserList list = new UserList();
+         list.setName(name);
+         list.setOwner(user);
+         return repository.save(list);
+     }
+ 
++    public void delete(User user, Long listId) {
++        repository.findById(listId)
++                .filter(l -> l.getOwner().equals(user))
++                .ifPresent(repository::delete);
++    }
++
+ 
+ 
+ }
+\ No newline at end of file
+diff --git a/base-front/src/app/app.routes.ts b/base-front/src/app/app.routes.ts
+index 39b62275edd139a69225c3e39cfccc162a457958..d8d5161bedcb9a250b4a3a98e409e0b5c477acee 100644
+--- a/base-front/src/app/app.routes.ts
++++ b/base-front/src/app/app.routes.ts
+@@ -1,33 +1,39 @@
+ import { Routes } from '@angular/router';
+ import { HomeComponent } from './pages/home/home.component';
+ import { ContactComponent } from './pages/contact/contact.component';
+ import { MentionsLegalesComponent } from './pages/mentions-legales/mentions-legales.component';
+ import { DashboardComponent } from './pages/dashboard/dashboard.component';
+ import { CreateListComponent } from './pages/lists/create-list/create-list.component';
+ import { ListComponent } from './pages/lists/view-list/view-list.component';
+ import { ConditionsUtilisationComponent } from './pages/cgu/conditions-utilisation.component';
+ import { RegisterComponent } from './pages/auth/register/register.component';
+ import { LoginComponent } from './pages/auth/login/login.component';
++import { AccountComponent } from './pages/account/account.component';
+ import { AuthGuard } from '../app/core/guards/auth.guard';
+ 
+ export const routes: Routes = [
+   { path: '', component: HomeComponent },
+   { path: 'auth/login', component: LoginComponent },
+   { path: 'auth/register', component: RegisterComponent },
+   { path: 'cgu', component: ConditionsUtilisationComponent },
+   { path: 'contact', component: ContactComponent },
+   { path: 'mentions-legales', component: MentionsLegalesComponent },
+   { path: 'cgu', component: ConditionsUtilisationComponent },
+   {
+     path: 'dashboard',
+     component: DashboardComponent,
+     canActivate: [AuthGuard],
+   },
+   {
+     path: 'lists/create',
+     component: CreateListComponent,
+     canActivate: [AuthGuard],
+   },
++  {
++    path: 'account',
++    component: AccountComponent,
++    canActivate: [AuthGuard],
++  },
+   { path: 'lists/:listId', component: ListComponent, canActivate: [AuthGuard] },
+   { path: '**', redirectTo: '' },
+ ];
+diff --git a/base-front/src/app/core/auth/auth.service.ts b/base-front/src/app/core/auth/auth.service.ts
+index 577738955c4b9ec47f276260886a2023cf4572d9..78a15fdd3c9b03791169b4adff754334a664d0c4 100644
+--- a/base-front/src/app/core/auth/auth.service.ts
++++ b/base-front/src/app/core/auth/auth.service.ts
+@@ -1,99 +1,114 @@
+-import { Injectable } from '@angular/core';
+-import { BehaviorSubject, Observable, of, tap, switchMap } from 'rxjs';
++import { Injectable, signal } from '@angular/core';
++import { toObservable } from '@angular/core/rxjs-interop';
++import { Observable, of, tap, switchMap } from 'rxjs';
+ import { HttpClient, HttpHeaders } from '@angular/common/http';
+ import { environment } from '../../../environments/environment';
+ import { Router } from '@angular/router'; // en haut
+ import { map } from 'rxjs/operators';
+ import { catchError } from 'rxjs/operators';
+ 
+ export interface AuthUser {
+   email: string;
+   firstName?: string;
+   lastName?: string;
+ }
+ 
+ @Injectable({
+   providedIn: 'root',
+ })
+ export class AuthService {
+-  private currentUserSubject = new BehaviorSubject<AuthUser | null>(null);
+-  public currentUser$ = this.currentUserSubject.asObservable();
++  private currentUserSig = signal<AuthUser | null>(null);
++  public currentUser$ = toObservable(this.currentUserSig);
+ 
+   private readonly authUrl = `${environment.apiBaseUrl}/auth`;
+   private readonly userUrl = `${environment.apiBaseUrl}/user`;
+   public readonly isLoggedIn$ = this.currentUser$.pipe(map((user) => !!user));
+   constructor(private http: HttpClient, private router: Router) {
+     this.loadUserFromToken();
+   }
+ 
+ loadUserFromToken(): Observable<AuthUser | null> {
+   const token = this.getToken();
+   if (!token) {
+     return of(null);
+   }
+ 
+   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+ 
+   return this.http.get<AuthUser>(`${this.userUrl}/me`, { headers }).pipe(
+-    tap((user) => this.currentUserSubject.next(user)),
++    tap((user) => this.currentUserSig.set(user)),
+     map((user) => user),
+     catchError(() => {
+       this.logout();
+       return of(null);
+     })
+   );
+ }
+ 
+   login(email: string, password: string): Observable<AuthUser> {
+     return this.http
+       .post<{ token: string }>(`${this.authUrl}/login`, { email, password })
+       .pipe(
+         tap((response) => {
+           localStorage.setItem('jwt', response.token);
+         }),
+         switchMap(() => this.loadCurrentUser())
+       );
+   }
+ 
+   register(data: AuthUser & { password: string }): Observable<any> {
+     return this.http
+       .post<{ token: string }>(`${this.authUrl}/register`, data)
+       .pipe(
+         tap((response) => {
+           localStorage.setItem('jwt', response.token);
+           this.loadCurrentUser().subscribe(); // Charger l'utilisateur après register
+           this.router.navigate(['/dashboard']);
+         })
+       );
+   }
+ 
+   loadCurrentUser(): Observable<AuthUser> {
+     const token = localStorage.getItem('jwt');
+     if (!token) return of(null as any);
+ 
+     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+ 
+     return this.http
+       .get<AuthUser>(`${this.userUrl}/me`, { headers })
+-      .pipe(tap((user) => this.currentUserSubject.next(user)));
++      .pipe(tap((user) => this.currentUserSig.set(user)));
++  }
++
++  updateUser(data: { firstName: string; lastName: string }): Observable<AuthUser> {
++    return this.http
++      .put<AuthUser>(`${this.userUrl}/me`, data)
++      .pipe(tap((user) => this.currentUserSig.set(user)));
++  }
++
++  deleteAccount(): Observable<void> {
++    return this.http.delete<void>(`${this.userUrl}/me`).pipe(
++      tap(() => {
++        this.logout();
++      })
++    );
+   }
+ 
+   logout(): void {
+     localStorage.removeItem('jwt');
+-    this.currentUserSubject.next(null);
++    this.currentUserSig.set(null);
+     this.router.navigate(['/']);
+   }
+ 
+   isLoggedIn(): boolean {
+-    return !!this.currentUserSubject.value;
++    return !!this.currentUserSig();
+   }
+ 
+   getUser(): AuthUser | null {
+-    return this.currentUserSubject.value;
++    return this.currentUserSig();
+   }
+   getToken(): string | null {
+     // console.log(localStorage.getItem('jwt'));
+ 
+     return localStorage.getItem('jwt');
+   }
+ }
+diff --git a/base-front/src/app/core/services/list.service.ts b/base-front/src/app/core/services/list.service.ts
+index 89d1a71b4633d59ee885b3c7a3d7c04d7646b18e..ccc544fd74c0e81dd9547dab8c765158d84d67ee 100644
+--- a/base-front/src/app/core/services/list.service.ts
++++ b/base-front/src/app/core/services/list.service.ts
+@@ -17,26 +17,30 @@ export class ListService {
+       console.error('Erreur lors du chargement des listes :', err);
+       return of([]); // 🔒 Empêche les relances infinies
+     })
+   );
+ }
+ 
+ 
+   getListById(id: number): Observable<ListDto> {
+     return this.http.get<ListDto>(`${this.apiUrl}/${id}`);
+   }
+ 
+   getListPersons(id: number): Observable<Person[]> {
+     return this.http.get<Person[]>(`${this.apiUrl}/${id}/persons`).pipe(
+       catchError((err) => {
+         console.error('Erreur lors du chargement des personnes', err);
+         return of([]); // Pas de relance infinie, renvoie une liste vide
+       })
+     );
+   }
+ 
+   createList(name: string): Observable<any> {
+     return this.http.post(this.apiUrl, name, {
+       headers: { 'Content-Type': 'application/json' }
+     });
+   }
++
++  deleteList(id: number): Observable<void> {
++    return this.http.delete<void>(`${this.apiUrl}/${id}`);
++  }
+ }
+diff --git a/base-front/src/app/pages/account/account.component.html b/base-front/src/app/pages/account/account.component.html
+new file mode 100644
+index 0000000000000000000000000000000000000000..d46d7312798e59632e902765ff77515b8854cde3
+--- /dev/null
++++ b/base-front/src/app/pages/account/account.component.html
+@@ -0,0 +1,16 @@
++<div class="container mt-4">
++  <h2>Mon compte</h2>
++  <form [formGroup]="form" (ngSubmit)="save()" class="mb-3">
++    <div class="mb-3">
++      <label class="form-label">Prénom</label>
++      <input formControlName="firstName" class="form-control" />
++    </div>
++    <div class="mb-3">
++      <label class="form-label">Nom</label>
++      <input formControlName="lastName" class="form-control" />
++    </div>
++    <button class="btn btn-primary" type="submit">Enregistrer</button>
++    <span class="ms-2">{{ message }}</span>
++  </form>
++  <button class="btn btn-danger" (click)="deleteAccount()">Supprimer mon compte</button>
++</div>
+diff --git a/base-front/src/app/pages/account/account.component.ts b/base-front/src/app/pages/account/account.component.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..2c36564e04552e2d3a005b5c1a94a351ce006fe6
+--- /dev/null
++++ b/base-front/src/app/pages/account/account.component.ts
+@@ -0,0 +1,38 @@
++import { Component, OnInit } from '@angular/core';
++import { CommonModule } from '@angular/common';
++import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
++import { AuthService } from '../../core/auth/auth.service';
++
++@Component({
++  selector: 'app-account',
++  standalone: true,
++  imports: [CommonModule, ReactiveFormsModule],
++  templateUrl: './account.component.html'
++})
++export class AccountComponent implements OnInit {
++  form!: FormGroup;
++  message = '';
++
++  constructor(private fb: FormBuilder, private authService: AuthService) {}
++
++  ngOnInit(): void {
++    const user = this.authService.getUser();
++    this.form = this.fb.group({
++      firstName: [user?.firstName || '', Validators.required],
++      lastName: [user?.lastName || '', Validators.required]
++    });
++  }
++
++  save(): void {
++    if (this.form.invalid) return;
++    this.authService.updateUser(this.form.value).subscribe({
++      next: () => this.message = '✅ Profil mis à jour',
++      error: () => this.message = 'Erreur lors de la mise à jour'
++    });
++  }
++
++  deleteAccount(): void {
++    if (!confirm('Supprimer votre compte ?')) return;
++    this.authService.deleteAccount().subscribe();
++  }
++}
+diff --git a/base-front/src/app/pages/dashboard/dashboard.component.html b/base-front/src/app/pages/dashboard/dashboard.component.html
+index 184a08a282f29977da5f032a6f93904f5d8e4d00..b968b50a4758561690fcc07eb657cfba3fe46518 100644
+--- a/base-front/src/app/pages/dashboard/dashboard.component.html
++++ b/base-front/src/app/pages/dashboard/dashboard.component.html
+@@ -12,33 +12,34 @@
+   <div class="d-flex justify-content-between align-items-center mb-4">
+     <h2>📋 Mes listes</h2>
+     <a routerLink="/lists/create" class="btn-primary-custom">+ Nouvelle liste</a>
+   </div>
+ 
+   <div *ngIf="loading" class="text-center">
+     <div class="spinner-border text-primary" role="status"></div>
+   </div>
+ 
+   <div *ngIf="!loading && lists.length === 0" class="alert alert-info">
+     Aucune liste trouvée. Commencez par en créer une !
+   </div>
+ 
+   <div *ngIf="!loading && lists.length > 0">
+     <div class="row row-cols-2 row-cols-md-4 g-4">
+       <div class="col" *ngFor="let list of lists">
+ <div class="card text-center shadow-sm">
+   <div class="card-body">
+     <h5 class="card-title">{{ list.name }}</h5>
+     
+     <p class="card-text card-details">
+       <span>👥 {{ list.personCount }} personnes</span>
+       <span>🎲 {{ list.drawCount }} tirages</span>
+     </p>
+     
+-    <a [routerLink]="['/lists', list.id]" class="btn-outline-primary-custom">Voir</a>
++    <a [routerLink]="['/lists', list.id]" class="btn-outline-primary-custom me-2">Voir</a>
++    <button class="btn btn-sm btn-danger" (click)="deleteList(list.id)">Supprimer</button>
+   </div>
+ </div>
+ 
+       </div>
+     </div>
+   </div>
+ </div>
+diff --git a/base-front/src/app/pages/dashboard/dashboard.component.ts b/base-front/src/app/pages/dashboard/dashboard.component.ts
+index 31cd3c0d16f1de1f5f56ea18ea6bbcfe2dcd06e2..88321ec2236f1bab73d41786ae8566cd4a2b08e2 100644
+--- a/base-front/src/app/pages/dashboard/dashboard.component.ts
++++ b/base-front/src/app/pages/dashboard/dashboard.component.ts
+@@ -1,35 +1,42 @@
+ import { Component, OnInit } from '@angular/core';
+ import { RouterModule } from '@angular/router';
+ import { CommonModule } from '@angular/common';
+ import { ListService } from '../../core/services/list.service';
+ import { ListDto } from '../../core/models/list.model';
+ 
+ @Component({
+   selector: 'app-dashboard',
+   standalone: true,
+   imports: [CommonModule, RouterModule],
+   templateUrl: './dashboard.component.html',
+ })
+ export class DashboardComponent implements OnInit {
+   lists: ListDto[] = [];
+   loading = true;
+ 
+   constructor(private listService: ListService) {}
+ 
+ error = false;
+ 
+-ngOnInit(): void {
+-  this.listService.getUserLists().subscribe({
+-    next: (data) => {
+-      this.lists = data;
+-      this.loading = false;
+-    },
+-    error: (err) => {
+-      console.error('Erreur Dashboard :', err);
+-      this.error = true;
+-      this.loading = false;
+-    },
+-  });
+-}
++  ngOnInit(): void {
++    this.listService.getUserLists().subscribe({
++      next: (data) => {
++        this.lists = data;
++        this.loading = false;
++      },
++      error: (err) => {
++        console.error('Erreur Dashboard :', err);
++        this.error = true;
++        this.loading = false;
++      },
++    });
++  }
++
++  deleteList(id: number): void {
++    if (!confirm('Supprimer cette liste ?')) return;
++    this.listService.deleteList(id).subscribe(() => {
++      this.lists = this.lists.filter((l) => l.id !== id);
++    });
++  }
+ 
+ }
+diff --git a/base-front/src/app/shared/header/header.component.html b/base-front/src/app/shared/header/header.component.html
+index bb93c3735ad11ed5510c1d9c0026c4a3de0222de..f09ff45a2ddab0e3dce732c1b0efcba5a12e2a5f 100644
+--- a/base-front/src/app/shared/header/header.component.html
++++ b/base-front/src/app/shared/header/header.component.html
+@@ -1,47 +1,50 @@
+ <nav class="navbar navbar-expand-lg navbar-dark primary">
+   <div class="container-fluid">
+     <a class="navbar-brand nav-hover" routerLink="/">{{ appName }}</a>
+ 
+     <!-- 🔽 Bouton burger pour mobile -->
+     <button
+       class="navbar-toggler"
+       type="button"
+       data-bs-toggle="collapse"
+       data-bs-target="#mainNavbar"
+       aria-controls="mainNavbar"
+       aria-expanded="false"
+       aria-label="Toggle navigation"
+     >
+       <span class="navbar-toggler-icon"></span>
+     </button>
+ 
+     <!-- 🔽 Contenu collapsable -->
+     <div class="collapse navbar-collapse" id="mainNavbar">
+       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+         <ng-container *ngIf="isLoggedIn$ | async; else loggedOut">
+           <li class="nav-item">
+             <a class="nav-link nav-hover" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+           </li>
++          <li class="nav-item">
++            <a class="nav-link nav-hover" routerLink="/account" routerLinkActive="active">Mon compte</a>
++          </li>
+           <li class="nav-item">
+             <a class="nav-link nav-hover" (click)="logout()" style="cursor: pointer;">Déconnexion</a>
+           </li>
+         </ng-container>
+           <li class="nav-item">
+             <a class="nav-link nav-hover" routerLink="/contact" routerLinkActive="active">Contact</a>
+           </li>
+           <li class="nav-item">
+             <a class="nav-link nav-hover" routerLink="/mentions-legales" routerLinkActive="active">Mentions légales</a>
+           </li>
+         <ng-template #loggedOut>
+ 
+           <li class="nav-item">
+             <a class="nav-link nav-hover" routerLink="/auth/login" routerLinkActive="active">Connexion</a>
+           </li>
+           <li class="nav-item">
+             <a class="nav-link nav-hover" routerLink="/auth/register" routerLinkActive="active">Inscription</a>
+           </li>
+         </ng-template>
+       </ul>
+     </div>
+   </div>
+ </nav>

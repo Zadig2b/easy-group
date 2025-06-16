@@ -1,0 +1,16 @@
+<div class="container mt-4">
+  <h2>Mon compte</h2>
+  <form [formGroup]="form" (ngSubmit)="save()" class="mb-3">
+    <div class="mb-3">
+      <label class="form-label">Prénom</label>
+      <input formControlName="firstName" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Nom</label>
+      <input formControlName="lastName" class="form-control" />
+    </div>
+    <button class="btn btn-primary" type="submit">Enregistrer</button>
+    <span class="ms-2">{{ message }}</span>
+  </form>
+  <button class="btn btn-danger" (click)="deleteAccount()">Supprimer mon compte</button>
+</div>

@@ -39,4 +39,8 @@ export class ListService {
       headers: { 'Content-Type': 'application/json' }
     });
   }
+
+  deleteList(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

@@ -26,6 +26,12 @@ public class UserListService {
         return repository.save(list);
     }
 
+    public void delete(User user, Long listId) {
+        repository.findById(listId)
+                .filter(l -> l.getOwner().equals(user))
+                .ifPresent(repository::delete);
+    }
+
 
 
 }

@@ -48,4 +48,9 @@ public class UserListController {
         UserList created = listService.create(user, name);
         return new ListDto(created);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteList(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        listService.delete(user, id);
+    }
 }

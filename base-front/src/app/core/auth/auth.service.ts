@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, tap, switchMap } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { Observable, of, tap, switchMap } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router'; // en haut
@@ -16,8 +17,8 @@ export interface AuthUser {
   providedIn: 'root',
 })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<AuthUser | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
+  private currentUserSig = signal<AuthUser | null>(null);
+  public currentUser$ = toObservable(this.currentUserSig);
 
   private readonly authUrl = `${environment.apiBaseUrl}/auth`;
   private readonly userUrl = `${environment.apiBaseUrl}/user`;
@@ -35,7 +36,7 @@ loadUserFromToken(): Observable<AuthUser | null> {
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
   return this.http.get<AuthUser>(`${this.userUrl}/me`, { headers }).pipe(
-    tap((user) => this.currentUserSubject.next(user)),
+    tap((user) => this.currentUserSig.set(user)),
     map((user) => user),
     catchError(() => {
       this.logout();
@@ -75,21 +76,35 @@ loadUserFromToken(): Observable<AuthUser | null> {
 
     return this.http
       .get<AuthUser>(`${this.userUrl}/me`, { headers })
-      .pipe(tap((user) => this.currentUserSubject.next(user)));
+      .pipe(tap((user) => this.currentUserSig.set(user)));
+  }
+
+  updateUser(data: { firstName: string; lastName: string }): Observable<AuthUser> {
+    return this.http
+      .put<AuthUser>(`${this.userUrl}/me`, data)
+      .pipe(tap((user) => this.currentUserSig.set(user)));
+  }
+
+  deleteAccount(): Observable<void> {
+    return this.http.delete<void>(`${this.userUrl}/me`).pipe(
+      tap(() => {
+        this.logout();
+      })
+    );
   }
 
   logout(): void {
     localStorage.removeItem('jwt');
-    this.currentUserSubject.next(null);
+    this.currentUserSig.set(null);
     this.router.navigate(['/']);
   }
 
   isLoggedIn(): boolean {
-    return !!this.currentUserSubject.value;
+    return !!this.currentUserSig();
   }
 
   getUser(): AuthUser | null {
-    return this.currentUserSubject.value;
+    return this.currentUserSig();
   }
   getToken(): string | null {
     // console.log(localStorage.getItem('jwt'));

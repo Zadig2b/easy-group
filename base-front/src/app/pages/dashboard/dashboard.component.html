@@ -34,7 +34,8 @@
       <span>🎲 {{ list.drawCount }} tirages</span>
     </p>
     
-    <a [routerLink]="['/lists', list.id]" class="btn-outline-primary-custom">Voir</a>
+    <a [routerLink]="['/lists', list.id]" class="btn-outline-primary-custom me-2">Voir</a>
+    <button class="btn btn-sm btn-danger" (click)="deleteList(list.id)">Supprimer</button>
   </div>
 </div>
 

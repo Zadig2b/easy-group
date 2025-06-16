@@ -18,18 +18,25 @@ export class DashboardComponent implements OnInit {
 
 error = false;
 
-ngOnInit(): void {
-  this.listService.getUserLists().subscribe({
-    next: (data) => {
-      this.lists = data;
-      this.loading = false;
-    },
-    error: (err) => {
-      console.error('Erreur Dashboard :', err);
-      this.error = true;
-      this.loading = false;
-    },
-  });
-}
+  ngOnInit(): void {
+    this.listService.getUserLists().subscribe({
+      next: (data) => {
+        this.lists = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Erreur Dashboard :', err);
+        this.error = true;
+        this.loading = false;
+      },
+    });
+  }
+
+  deleteList(id: number): void {
+    if (!confirm('Supprimer cette liste ?')) return;
+    this.listService.deleteList(id).subscribe(() => {
+      this.lists = this.lists.filter((l) => l.id !== id);
+    });
+  }
 
 }
