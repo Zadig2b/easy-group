@@ -3,7 +3,7 @@
     "commands": [
       "chmod +x ./base-back/mvnw",
       "./base-back/mvnw install -DskipTests",
-      "npm install --prefix base-front"
+      "npm ci --prefix base-front"
     ]
   },
   "backend": {
