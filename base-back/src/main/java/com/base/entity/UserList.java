@@ -2,6 +2,11 @@ package com.base.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.base.entity.Person;
+import com.base.entity.Draw;
 
 @Entity
 @Getter
@@ -26,6 +31,12 @@ public class UserList {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User owner;
+
+    @OneToMany(mappedBy = "list", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Person> persons = new ArrayList<>();
+
+    @OneToMany(mappedBy = "list", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Draw> draws = new ArrayList<>();
 
     public void incrementPersonCount() {
         this.personCount++;
