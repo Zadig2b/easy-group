@@ -25,13 +25,11 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v3
         with:
-          path: .
           distribution: 'temurin'
           java-version: '17'
 
       - name: Build backend
-        run: cd base-back && ./mvnw install -DskipTests=false
-
+        run: cd base-back && ./mvnw install -Dspring.profiles.active=test -DskipTests=false
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -41,11 +39,18 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci --prefix base-front
 
+      - name: Install Chrome for headless tests
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+          echo "CHROME_BIN=$(which chromium-browser)" >> $GITHUB_ENV
+
+      - name: Run frontend tests in headless mode
+        run: |
+          npx --prefix base-front ng test --browsers=ChromeHeadless --watch=false --no-progress
+
       - name: Build frontend
         run: npm run build --prefix base-front
-
-      - name: Run frontend tests
-        run: npm test --prefix base-front
 
       - name: Deploy to staging (SSH)
         if: success()
