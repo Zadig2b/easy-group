@@ -1,0 +1,58 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  staging:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: easygroup
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build backend
+        run: ./base-back/mvnw install -DskipTests=false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix base-front
+
+      - name: Build frontend
+        run: npm run build --prefix base-front
+
+      - name: Run frontend tests
+        run: npm test --prefix base-front
+
+      - name: Deploy to staging (SSH)
+        if: success()
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd easy-group
+            git pull origin main
+            docker-compose --env-file .env.staging -f docker-compose.staging.yml up --build -d
