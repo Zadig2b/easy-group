@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "base-front"
+    },
+    {
+      "path": "base-back"
+    }
+  ],
+  "settings": {
+    "java.project.sourcePaths": ["src/main/java"],
+    "java.project.outputPath": "target/classes",
+    "java.compile.nullAnalysis.mode": "disabled",
+    "java.configuration.updateBuildConfiguration": "interactive"
+  }
+}
