@@ -29,7 +29,8 @@ jobs:
           java-version: '17'
 
       - name: Build backend
-        run: ./base-back/mvnw install -DskipTests=false
+        run: cd base-back && ./mvnw install -DskipTests=false
+
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
