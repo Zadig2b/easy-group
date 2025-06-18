@@ -70,5 +70,5 @@ jobs:
           ssh -o StrictHostKeyChecking=no pi@raspberrypi.tail06bcb8.ts.net "
             cd easy-group &&
             git pull origin main &&
-            docker-compose --env-file .env.staging -f docker-compose.staging.yml up --build -d
+            docker compose --env-file .env.staging -f docker-compose.staging.yml up --build -d
           "
