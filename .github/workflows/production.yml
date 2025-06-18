@@ -11,13 +11,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Deploy to prod (SSH)
-        uses: appleboy/ssh-action@v0.1.10
+      - name: Setup Tailscale
+        uses: tailscale/github-action@v2
         with:
-          host: ${{ secrets.PROD_HOST }}
-          username: ${{ secrets.PROD_USER }}
-          key: ${{ secrets.PROD_SSH_KEY }}
-          script: |
-            cd easy-group
-            git pull origin main
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Deploy to prod via Tailscale SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no pi@raspberrypi "
+            cd easy-group &&
+            git pull origin main &&
             docker-compose --env-file .env.prod -f docker-compose.prod.yml up --build -d
+          "
