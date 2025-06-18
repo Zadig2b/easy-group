@@ -56,14 +56,14 @@ jobs:
         run: npm run build --prefix base-front
 
       
-      - name: Test SSH connection
-        run: |
-         ssh -o StrictHostKeyChecking=no -v pi@raspberrypi.tail06bcb8.ts.net "echo 'SSH OK'"
-  
       - name: Setup Tailscale
         uses: tailscale/github-action@v2
         with:
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no -v pi@raspberrypi.tail06bcb8.ts.net "echo 'SSH OK'"
 
       - name: Deploy to staging via Tailscale SSH
         run: |
