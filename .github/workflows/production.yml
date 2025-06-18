@@ -23,5 +23,5 @@ jobs:
           ssh -o StrictHostKeyChecking=no pi@raspberrypi.tail06bcb8.ts.net "
             cd easy-group &&
             git pull origin main &&
-            docker compose --env-file .env.prod -f docker-compose.prod.yml up --build -d
+          docker compose -f docker-compose.prod.yml --env-file .env.prod --project-name easygroup-prod up --build -d
           "
