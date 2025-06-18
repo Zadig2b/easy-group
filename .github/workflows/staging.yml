@@ -29,7 +29,7 @@ jobs:
           java-version: '17'
 
       - name: Build backend
-        run: cd base-back && ./mvnw install -Dspring.profiles.active=test -DskipTests=false
+        run: cd base-back && ./mvnw --batch-mode --quiet install -Dspring.profiles.active=test -DskipTests=false
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -37,7 +37,7 @@ jobs:
           node-version: '20'
 
       - name: Install frontend dependencies
-        run: npm ci --prefix base-front
+        run: npm ci --no-progress --prefix base-front
 
       - name: Install Chrome for headless tests
         run: |
@@ -52,14 +52,16 @@ jobs:
       - name: Build frontend
         run: npm run build --prefix base-front
 
-      - name: Deploy to staging (SSH)
-        if: success()
-        uses: appleboy/ssh-action@v0.1.10
+      - name: Setup Tailscale
+        uses: tailscale/github-action@v2
         with:
-          host: ${{ secrets.STAGING_HOST }}
-          username: ${{ secrets.STAGING_USER }}
-          key: ${{ secrets.STAGING_SSH_KEY }}
-          script: |
-            cd easy-group
-            git pull origin main
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Deploy to staging via Tailscale SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no pi@raspberrypi "
+            cd easy-group &&
+            git pull origin main &&
             docker-compose --env-file .env.staging -f docker-compose.staging.yml up --build -d
+          "
+
