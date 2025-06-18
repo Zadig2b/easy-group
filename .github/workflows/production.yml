@@ -1,7 +1,7 @@
 name: Deploy to Production
 
 on:
-  workflow_dispatch:  # bouton manuel dans GitHub Actions
+  workflow_dispatch:  # Déclenchement manuel dans GitHub Actions
 
 jobs:
   deploy:
@@ -11,10 +11,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Tailscale
-        uses: tailscale/github-action@v2
+      - name: Setup Tailscale (OAuth)
+        uses: tailscale/github-action@v3
         with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
 
       - name: Deploy to prod via Tailscale SSH
         run: |

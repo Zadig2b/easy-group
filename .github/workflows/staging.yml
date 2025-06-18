@@ -47,7 +47,6 @@ jobs:
           sudo apt-get install -y google-chrome-stable
           echo "CHROME_BIN=$(which google-chrome)" >> $GITHUB_ENV
 
-
       - name: Run frontend tests in headless mode
         run: |
           npx --prefix base-front ng test --browsers=ChromeHeadless --watch=false --no-progress
@@ -55,11 +54,12 @@ jobs:
       - name: Build frontend
         run: npm run build --prefix base-front
 
-      
-      - name: Setup Tailscale
-        uses: tailscale/github-action@v2
+      - name: Setup Tailscale (OAuth)
+        uses: tailscale/github-action@v3
         with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
 
       - name: Test SSH connection
         run: |
@@ -72,4 +72,3 @@ jobs:
             git pull origin main &&
             docker-compose --env-file .env.staging -f docker-compose.staging.yml up --build -d
           "
-
