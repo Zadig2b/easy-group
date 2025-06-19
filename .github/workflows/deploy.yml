@@ -1,0 +1,42 @@
+name: CI/CD Prod
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build backend
+        run: cd base-back && ./mvnw --batch-mode --quiet install -Dspring.profiles.active=test -DskipTests=false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix base-front
+
+      - name: Run frontend tests
+        run: npx --prefix base-front ng test --browsers=ChromeHeadless --watch=false --no-progress
+
+      - name: Build + Deploy to PROD
+        run: |
+          ssh -o StrictHostKeyChecking=no pi@raspberrypi.tail06bcb8.ts.net "
+            cd easy-group &&
+            git pull origin main &&
+            docker compose -f docker-compose.prod.yml --env-file .env.prod --project-name easygroup-prod up -d --build
+          "
