@@ -1,4 +1,4 @@
-name: CI/CD Prod
+name: Deploy to Production
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  production:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,15 +28,35 @@ jobs:
           node-version: '20'
 
       - name: Install frontend dependencies
-        run: npm ci --prefix base-front
+        run: npm ci --no-progress --prefix base-front
 
-      - name: Run frontend tests
-        run: npx --prefix base-front ng test --browsers=ChromeHeadless --watch=false --no-progress
+      - name: Install Google Chrome
+        run: |
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          echo "CHROME_BIN=$(which google-chrome)" >> $GITHUB_ENV
 
-      - name: Build + Deploy to PROD
+      - name: Run frontend tests in headless mode
+        run: |
+          npx --prefix base-front ng test --browsers=ChromeHeadless --watch=false --no-progress
+
+      - name: Setup Tailscale (OAuth)
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no -v pi@raspberrypi.tail06bcb8.ts.net "echo 'SSH OK'"
+
+      - name: Deploy to production via Tailscale SSH
         run: |
           ssh -o StrictHostKeyChecking=no pi@raspberrypi.tail06bcb8.ts.net "
             cd easy-group &&
             git pull origin main &&
-            docker compose -f docker-compose.prod.yml --env-file .env.prod --project-name easygroup-prod up -d --build
+            docker compose -f docker-compose.prod.yml --env-file .env.prod --project-name easygroup-prod up --build -d
           "
