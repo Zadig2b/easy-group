@@ -23,15 +23,15 @@ services:
     depends_on:
       - mysql
 
-  frontend:
+  nginx:
     build:
       context: ./base-front
-      target: build
       args:
         CONFIG: production
+        BASE_HREF: /easygroup/
     ports:
-      - "${FRONT_PORT}:${CONTAINER_FRONT_PORT}"  # 4200:80 via .env.prod
-    environment:
-      - NODE_ENV=production
+      - "4200:80"
+    volumes:
+      - ./base-front/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - backend
