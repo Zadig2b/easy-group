@@ -46,5 +46,5 @@ services:
     depends_on:
       - frontend
       - backend
-  command: ["/bin/sh", "/wait-for-frontend.sh"]
+    command: ["/bin/sh", "/wait-for-frontend.sh"]
 
