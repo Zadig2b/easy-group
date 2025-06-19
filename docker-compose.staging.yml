@@ -30,6 +30,7 @@ services:
         CONFIG: staging
     environment:
       - NODE_ENV=staging
+      - BASE_HREF=/easygroup-staging/
     depends_on:
       - backend
     # Ce conteneur ne sert pas directement le front, il génère les fichiers statiques
