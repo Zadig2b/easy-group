@@ -51,9 +51,6 @@ jobs:
         run: |
           npx --prefix base-front ng test --browsers=ChromeHeadless --watch=false --no-progress
 
-      - name: Build frontend
-        run: npm run build --prefix base-front
-
       - name: Setup Tailscale (OAuth)
         uses: tailscale/github-action@v3
         with:
@@ -70,5 +67,5 @@ jobs:
           ssh -o StrictHostKeyChecking=no pi@raspberrypi.tail06bcb8.ts.net "
             cd easy-group &&
             git pull origin main &&
-          docker compose -f docker-compose.staging.yml --env-file .env.staging --project-name easygroup-staging up --build -d
+            docker compose -f docker-compose.staging.yml --env-file .env.staging --project-name easygroup-staging up --build -d
           "

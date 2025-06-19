@@ -23,28 +23,14 @@ services:
     depends_on:
       - mysql
 
-  frontend:
+  nginx:
     build:
       context: ./base-front
       args:
-        CONFIG: staging
-    environment:
-      - NODE_ENV=staging
-      - BASE_HREF=/easygroup-staging/
-    depends_on:
-      - backend
-    # Ce conteneur ne sert pas directement le front, il génère les fichiers statiques
-
-  nginx:
-    image: nginx:alpine
+        BASE_HREF: /easygroup-staging/
     ports:
       - "4201:80"
     volumes:
       - ./base-front/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./base-front/dist/easy-group/browser:/usr/share/nginx/html
-      - ./base-front/nginx/wait-for-frontend.sh:/wait-for-frontend.sh
     depends_on:
-      - frontend
       - backend
-    command: ["/bin/sh", "/wait-for-frontend.sh"]
-
