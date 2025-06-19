@@ -42,7 +42,9 @@ services:
     volumes:
       - ./base-front/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./base-front/dist/easy-group/browser:/usr/share/nginx/html
+      - ./base-front/nginx/wait-for-frontend.sh:/wait-for-frontend.sh
     depends_on:
       - frontend
       - backend
+  command: ["/bin/sh", "/wait-for-frontend.sh"]
 
