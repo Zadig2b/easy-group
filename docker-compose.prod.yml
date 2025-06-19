@@ -9,7 +9,6 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
     volumes:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
-    container_name: mysql_prod
 
   backend:
     build:
@@ -23,7 +22,6 @@ services:
       SPRING_PROFILES_ACTIVE: prod
     depends_on:
       - mysql
-    container_name: backend_prod
 
   frontend:
     build:
@@ -37,4 +35,3 @@ services:
       - NODE_ENV=production
     depends_on:
       - backend
-    container_name: frontend_prod
