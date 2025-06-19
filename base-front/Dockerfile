@@ -12,9 +12,12 @@ WORKDIR /app
 COPY . .
 RUN npm install
 
-# Ajout de l'argument facultatif (par défaut "/")
+# Ajout des arguments pour config personnalisée
 ARG BASE_HREF=/
-RUN npm run build -- --configuration production --base-href=$BASE_HREF
+ARG CONFIG=production
+
+# Build Angular avec base href et environnement ciblé (prod/staging...)
+RUN npm run build -- --configuration $CONFIG --base-href=$BASE_HREF
 
 # Étape PROD : Nginx
 FROM nginx:alpine AS prod
