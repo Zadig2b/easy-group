@@ -28,6 +28,7 @@ services:
       context: ./base-front
       args:
         BASE_HREF: /easygroup-staging/
+        config: staging
     ports:
       - "4201:80"
     volumes:
