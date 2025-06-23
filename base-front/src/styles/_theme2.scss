@@ -1,0 +1,35 @@
+@use "sass:color";
+@use "colors" as *;
+
+// 🎨 Base du thème (modifie cette variable pour changer tout le thème)
+$theme2-color: $secondary; // ex : $secondary ou $secondary
+$btn-color: $secondary;
+
+// 🟦 Radius (coins arrondis)
+$radius: 0.5rem;
+$radius-sm: 0.25rem;
+
+// 🔹 Dérivés standards
+$theme2-light: color.adjust($theme2-color, $lightness: 10%);
+$theme2-lighter: color.adjust($theme2-color, $lightness: 25%);
+$theme2-very-light: color.adjust($theme2-color, $lightness: 70%);
+$theme2-dark: color.adjust($theme2-color, $lightness: -10%);
+$theme2-darker: color.adjust($theme2-color, $lightness: -25%);
+
+// 🔸 Transparence
+$theme2-translucent: color.change($theme2-color, $alpha: 0.8);
+$theme2-transparent: color.change($theme2-color, $alpha: 0.4);
+$theme2-ghost: color.change($theme2-color, $alpha: 0.1);
+
+$btn-translucent: color.change($btn-color, $alpha: 0.8);
+$btn-transparent: color.change($btn-color, $alpha: 0.4);
+$btn-ghost: color.change($btn-color, $alpha: 0.1);
+
+// 🔸 Comportements UI
+$theme2-hover: color.adjust($theme2-color, $lightness: 15%, $saturation: 15%);
+$theme2-active: color.adjust($theme2-color, $lightness: -5%, $saturation: 15%);
+$theme2-border: color.scale($theme2-color, $lightness: 40%);
+
+$btn-hover: color.adjust($btn-color, $lightness: 15%, $saturation: 10%);
+$btn-active: color.adjust($btn-color, $lightness: -5%, $saturation: 15%);
+$btn-border: color.scale($btn-color, $lightness: 40%);

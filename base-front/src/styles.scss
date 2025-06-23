@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @use "sass:color";
 @use "theme" as *;
+@use "theme2" as *;
 @use "btn";
 @use "card";
 
@@ -55,6 +56,7 @@ main.flex-fill {
 
 .primary-very-light {
   background-color: $theme-very-light;
+  
 }
 
 .primary-dark {
@@ -71,7 +73,6 @@ main.flex-fill {
 .shadow-deep {
   box-shadow: 0 6px 20px rgba($theme-color, 0.3);
 }
-
 
 .border-primary-soft {
   border: 1px solid $theme-border;
@@ -92,4 +93,16 @@ main.flex-fill {
 .bg-ghost {
   background-color: $theme-ghost;
   color: $theme-color;
+}
+
+.delete-btn {
+  color: $theme-color;
+
+  &:hover {
+    color: white; // le SVG suit automatiquement via stroke="currentColor"
+  }
+
+  .trash-icon {
+    stroke-width: 2; // Épaisseur personnalisable
+  }
 }

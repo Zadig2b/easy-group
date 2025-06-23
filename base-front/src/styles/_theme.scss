@@ -12,7 +12,7 @@ $radius-sm: 0.25rem;
 // 🔹 Dérivés standards
 $theme-light: color.adjust($theme-color, $lightness: 10%);
 $theme-lighter: color.adjust($theme-color, $lightness: 25%);
-$theme-very-light: color.adjust($theme-color, $lightness: 70%);
+$theme-very-light: color.adjust($theme-color, $lightness: 60%);
 $theme-dark: color.adjust($theme-color, $lightness: -10%);
 $theme-darker: color.adjust($theme-color, $lightness: -25%);
 

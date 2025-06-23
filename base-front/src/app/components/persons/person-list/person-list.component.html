@@ -1,5 +1,7 @@
 <div class="person-list-container mt-4">
-  <h3 class="person-list-title mb-4">👥 <strong>Personnes de la liste</strong></h3>
+  <h3 class="person-list-title mb-4">
+    👥 <strong>Personnes de la liste</strong>
+  </h3>
 
   <div *ngIf="loading" class="text-center mt-4">
     <div class="loader loader-primary"></div>
@@ -30,39 +32,48 @@
           <td>{{ person.age }}</td>
 
           <td>
-            <span class="badge-level"
+            <span
+              class="badge-level"
               [ngClass]="{
                 'level-low': person.frenchLevel < 2,
-                'level-medium': person.frenchLevel >= 2 && person.frenchLevel < 4,
+                'level-medium':
+                  person.frenchLevel >= 2 && person.frenchLevel < 4,
                 'level-high': person.frenchLevel >= 4
-              }">
+              }"
+            >
               {{ person.frenchLevelLabel }}
             </span>
           </td>
 
           <td>
-            <span class="badge-level"
+            <span
+              class="badge-level"
               [ngClass]="{
                 'level-low': person.techLevel < 2,
                 'level-medium': person.techLevel >= 2 && person.techLevel < 4,
                 'level-high': person.techLevel >= 4
-              }">
+              }"
+            >
               {{ person.techLevelLabel }}
             </span>
           </td>
 
           <td>
-            <span class="badge-status"
+            <span
+              class="badge-status"
               [ngClass]="{
                 'status-ok': person.oldDwwm,
                 'status-ko': !person.oldDwwm
-              }">
-              {{ person.oldDwwm ? ' ✅' : ' ❌' }}
+              }"
+            >
+              {{ person.oldDwwm ? " ✅" : " ❌" }}
             </span>
           </td>
 
           <td>
-            <span class="custom-badge badge-profile">{{ person.profileLabel }}</span>
+            <span class="custom-badge badge-profile">{{
+              person.profileLabel
+            }}</span>
           </td>
 
           <td>
@@ -73,6 +84,7 @@
             >
               🗑️
             </button>
+
           </td>
         </tr>
       </tbody>

@@ -1,4 +1,4 @@
-<div class=" mt-5 p-3 primary-very-light rounded">
+<div class=" mt-5 p-3 primary-lighter rounded">
 <div class="btn-primary-custom" (click)="toggleForm()">➕ Ajouter une personne</div>
 
 <form *ngIf="showForm && personForm && listId"
@@ -47,7 +47,7 @@
     </div>
 
     <div class="col-12 mt-3">
-      <button type="submit" class="btn btn-primary" [disabled]="personForm.invalid">Ajouter</button>
+      <button type="submit" class="btn-primary-custom" [disabled]="personForm.invalid">Ajouter</button>
     </div>
   </form>
 
