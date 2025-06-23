@@ -9,7 +9,6 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
     volumes:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
-    container_name: mysql_prod
 
   backend:
     build:
@@ -23,18 +22,16 @@ services:
       SPRING_PROFILES_ACTIVE: prod
     depends_on:
       - mysql
-    container_name: backend_prod
 
-  frontend:
+  nginx:
     build:
       context: ./base-front
-      target: build
       args:
         CONFIG: production
+        BASE_HREF: /easygroup/
     ports:
-      - "${FRONT_PORT}:${CONTAINER_FRONT_PORT}"  # 4200:80 via .env.prod
-    environment:
-      - NODE_ENV=production
+      - "4200:80"
+    volumes:
+      - ./base-front/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - backend
-    container_name: frontend_prod

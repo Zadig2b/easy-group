@@ -1,4 +1,4 @@
-name: Deploy to Staging
+name: Deploy to Production
 
 on:
   push:
@@ -6,17 +6,8 @@ on:
       - main
 
 jobs:
-  staging:
+  production:
     runs-on: ubuntu-latest
-
-    services:
-      mysql:
-        image: mysql:8
-        ports:
-          - 3306:3306
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: easygroup
 
     steps:
       - name: Checkout code
@@ -51,9 +42,6 @@ jobs:
         run: |
           npx --prefix base-front ng test --browsers=ChromeHeadless --watch=false --no-progress
 
-      - name: Build frontend
-        run: npm run build --prefix base-front
-
       - name: Setup Tailscale (OAuth)
         uses: tailscale/github-action@v3
         with:
@@ -65,10 +53,10 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -v pi@raspberrypi.tail06bcb8.ts.net "echo 'SSH OK'"
 
-      - name: Deploy to staging via Tailscale SSH
+      - name: Deploy to production via Tailscale SSH
         run: |
           ssh -o StrictHostKeyChecking=no pi@raspberrypi.tail06bcb8.ts.net "
             cd easy-group &&
             git pull origin main &&
-            docker-compose --env-file .env.staging -f docker-compose.staging.yml up --build -d
+            docker compose -f docker-compose.prod.yml --env-file .env.prod --project-name easygroup-prod up --build -d
           "
