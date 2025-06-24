@@ -4,7 +4,8 @@ import com.base.entity.UserList;
 import com.base.entity.User;
 import com.base.repository.UserListRepository;
 import org.springframework.stereotype.Service;
-
+import com.base.exception.DuplicateListNameException;
+import org.springframework.dao.DataIntegrityViolationException;
 import java.util.List;
 
 @Service
@@ -23,7 +24,12 @@ public class UserListService {
         UserList list = new UserList();
         list.setName(name);
         list.setOwner(user);
-        return repository.save(list);
+
+        try {
+            return repository.save(list);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DuplicateListNameException(name);
+        }
     }
 
     public void delete(User user, Long listId) {
@@ -31,7 +37,5 @@ public class UserListService {
                 .filter(l -> l.getOwner().equals(user))
                 .ifPresent(repository::delete);
     }
-
-
 
 }

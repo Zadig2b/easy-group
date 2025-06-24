@@ -1,14 +1,20 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ListService } from '../../../core/services/list.service';
 import { Router } from '@angular/router';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create-list',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './create-list.component.html'
+  templateUrl: './create-list.component.html',
 })
 export class CreateListComponent {
   listForm: FormGroup;
@@ -17,10 +23,11 @@ export class CreateListComponent {
   constructor(
     private fb: FormBuilder,
     private listService: ListService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
     this.listForm = this.fb.group({
-      name: ['', Validators.required]
+      name: ['', Validators.required],
     });
   }
 
@@ -32,12 +39,22 @@ export class CreateListComponent {
 
     this.listService.createList(name).subscribe({
       next: () => {
+        this.toastService.show('Liste créée avec succès.', 'success');
         this.router.navigate(['/dashboard']);
       },
+
       error: (err) => {
         console.error('Erreur lors de la création', err);
         this.submitting = false;
-      }
+
+        if (err.status === 409) {
+          this.toastService.show(err.error, 'error'); // message personnalisé du backend
+        } else {
+          this.toastService.show(
+            'Une erreur est survenue lors de la création de la liste.'
+          );
+        }
+      },
     });
   }
 }
