@@ -14,5 +14,4 @@ public class GlobalExceptionHandler {
                 .body(ex.getMessage());      // message défini dans l'exception
     }
 
-    // Tu peux ajouter d'autres erreurs ici si besoin
 }
