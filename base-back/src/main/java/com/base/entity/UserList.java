@@ -11,6 +11,11 @@ import java.util.List;
 
 
 @Entity
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name", "user_id"})
+    }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -52,6 +57,4 @@ public class UserList {
     public void incrementDrawCount() {
         this.drawCount++;
     }
-    
-
 }

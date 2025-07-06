@@ -9,6 +9,7 @@ import { ListDto } from '../../core/models/list.model';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   lists: ListDto[] = [];

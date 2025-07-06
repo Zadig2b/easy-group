@@ -1,0 +1,11 @@
+<div
+  *ngIf="message"
+  class="toast align-items-center text-white border-0 show position-fixed bottom-0 end-0 m-3"
+  [ngClass]="toastClass"
+  role="alert"
+>
+  <div class="d-flex">
+    <div class="toast-body">{{ message.text }}</div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="toastService.clear()"></button>
+  </div>
+</div>
