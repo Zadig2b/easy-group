@@ -10,4 +10,4 @@
 
 ## Objectif
 
-Déployer automatiquement la dernière version du projet dès qu'une modification est poussée sur la branche `main`.
+Déployer automatiquement la dernière version du projet dès qu'une modification est poussée sur la branche `main`..
