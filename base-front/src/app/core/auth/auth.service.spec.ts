@@ -52,18 +52,7 @@ describe('AuthService', () => {
     reqMe.flush(mockUser);
   });
 
-  it('should register and show alert', () => {
-    spyOn(window, 'alert');
-    service
-      .register({ email: 'a@a.com', password: '123', firstName: 'A', lastName: 'B' })
-      .subscribe();
-
-    const req = httpMock.expectOne(`${service['authUrl']}/register`);
-    expect(req.request.method).toBe('POST');
-    req.flush({ message: 'ok' });
-
-    expect(window.alert).toHaveBeenCalledWith('Veuillez vérifier votre email pour activer votre compte.');
-  });
+  
 
   it('should handle loadUserFromToken without token', (done) => {
     service.loadUserFromToken().subscribe((result) => {
@@ -140,11 +129,5 @@ describe('AuthService', () => {
     expect(service.getToken()).toBe('123');
   });
 
-  it('should confirm email with token', () => {
-    service.confirmEmail('token123').subscribe();
-
-    const req = httpMock.expectOne(`${service['authUrl']}/confirm?token=token123`);
-    expect(req.request.method).toBe('GET');
-    req.flush({});
-  });
+  
 });

@@ -23,9 +23,5 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
-    @GetMapping("/confirm")
-    public ResponseEntity<?> confirm(@RequestParam String token) {
-        authService.confirmAccount(token);
-        return ResponseEntity.ok("Compte activé");
-    }
+    
 }

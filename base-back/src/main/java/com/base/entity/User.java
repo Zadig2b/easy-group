@@ -33,8 +33,8 @@ public class User {
     private String lastName;
 
     @Builder.Default
-    @Column(nullable = false, columnDefinition = "boolean default true")
-    private boolean isActivated = false;
+    @Column(nullable = false)
+    private boolean isActivated = true;
     
     @Builder.Default
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
