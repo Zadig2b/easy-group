@@ -24,7 +24,6 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
-    private final MailService mailService;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -38,13 +37,13 @@ public class AuthService {
                 .lastName(request.getLastName())
                 .createdAt(Instant.now())
                 .cguDate(LocalDate.now())
+                .isActivated(true)
                 .build();
 
         userRepository.save(user);
 
         String token = jwtUtils.generateToken(user.getEmail());
-        mailService.sendActivationEmail(user, token);
-        return new AuthResponse("Registration successful. Please check your email.");
+        return new AuthResponse(token);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -55,22 +54,8 @@ public class AuthService {
             throw new RuntimeException("Mot de passe incorrect");
         }
 
-        if (!user.isActivated()) {
-            throw new RuntimeException("Compte non activé");
-        }
-
         String token = jwtUtils.generateToken(user.getEmail());
         return new AuthResponse(token);
     }
 
-    public void confirmAccount(String token) {
-        if (!jwtUtils.validateToken(token)) {
-            throw new RuntimeException("Token invalide");
-        }
-        String email = jwtUtils.getEmailFromToken(token);
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-        user.setActivated(true);
-        userRepository.save(user);
     }
-}

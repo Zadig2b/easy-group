@@ -58,9 +58,7 @@ loadUserFromToken(): Observable<AuthUser | null> {
 
   register(data: AuthUser & { password: string }): Observable<any> {
     return this.http.post<{ message: string }>(`${this.authUrl}/register`, data).pipe(
-      tap(() => {
-        alert('Veuillez vérifier votre email pour activer votre compte.');
-      })
+      
     );
   }
 
@@ -108,7 +106,5 @@ loadUserFromToken(): Observable<AuthUser | null> {
     return localStorage.getItem('jwt');
   }
 
-  confirmEmail(token: string) {
-    return this.http.get(`${this.authUrl}/confirm`, { params: { token } });
-  }
+  
 }
